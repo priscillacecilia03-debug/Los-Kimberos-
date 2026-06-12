@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About · Los Kimberos | Salsa Dura Band · San Francisco Bay Area</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,700;1,6..96,900&family=Unbounded:wght@300;400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    :root {
+      --bg:    #0A0C0A;
+      --selva: #1A3530;
+      --red:   #C83820;
+      --red2:  #D4701C;
+      --cream: #F0E2CC;
+      --gold:  #C8941A;
+      --dim:   rgba(240,226,204,.22);
+    }
+    body { font-family:'Space Grotesk',sans-serif; background:var(--bg); color:var(--cream); overflow-x:hidden; }
+    a { text-decoration:none; color:inherit; }
+    img { max-width:100%; display:block; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:500;
+      display:grid; grid-template-columns:1fr 1fr; align-items:center;
+      padding:1.8rem 3rem;
+      background:rgba(10,12,10,0.82);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(240,226,204,0.06);
+    }
+    .nav-links { display:flex; gap:2.5rem; }
+    .nav-links.right { justify-content:flex-end; align-items:center; gap:2rem; }
+    .nav-links a {
+      font-family:'Unbounded',sans-serif;
+      font-size:.62rem; font-weight:400; letter-spacing:2px; text-transform:uppercase;
+      color:var(--cream); transition:color .2s; position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px;
+      background:var(--gold); transform:scaleX(0); transform-origin:left;
+      transition:transform .3s ease;
+    }
+    .nav-links a:hover { color:var(--red2); }
+    .nav-links a:hover::after { transform:scaleX(1); }
+    .nav-links a.active { color:var(--gold); }
+    .nav-links a.active::after { transform:scaleX(1); background:var(--gold); }
+    .nav-book {
+      font-family:'Unbounded',sans-serif; font-size:.52rem; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase;
+      color:var(--cream); background:var(--red); border:none;
+      padding:.55rem 1.3rem; cursor:pointer;
+      transition:background .25s, transform .2s; display:inline-block;
+    }
+    .nav-book:hover { background:#b02f1a; transform:translateY(-1px); }
+
+    /* Hamburger */
+    .nav-hamburger {
+      display:none; flex-direction:column; justify-content:center; gap:5px;
+      background:none; border:none; cursor:pointer; z-index:600;
+      padding:4px; width:36px; height:36px;
+    }
+    .nav-hamburger span {
+      display:block; height:1.5px; background:var(--cream);
+      transition:transform .3s ease, opacity .2s ease;
+      transform-origin:center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-drawer {
+      display:none; position:fixed; inset:0; z-index:450;
+      background:rgba(10,12,10,0.97);
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:3rem; opacity:0; pointer-events:none; transition:opacity .3s ease;
+    }
+    .mobile-drawer.open { opacity:1; pointer-events:all; }
+    .mobile-drawer a {
+      font-family:'Unbounded',sans-serif; font-size:1.1rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase; color:var(--cream); transition:color .2s;
+    }
+    .mobile-drawer a:hover { color:var(--red2); }
+    .mobile-drawer .drawer-book {
+      font-family:'Unbounded',sans-serif; font-size:.72rem; font-weight:700;
+      letter-spacing:5px; text-transform:uppercase; color:var(--cream); background:var(--red);
+      padding:.85rem 2.2rem; display:inline-block; transition:background .25s;
+    }
+    .mobile-drawer .drawer-book:hover { background:#b02f1a; }
+
+    /* ── ABOUT HERO ── */
+    .about-hero {
+      min-height:88vh;
+      background:
+        radial-gradient(ellipse at 8% 92%, rgba(200,56,32,0.10) 0%, transparent 48%),
+        radial-gradient(ellipse at 92% 8%,  rgba(200,148,26,0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 50%, rgba(26,53,48,0.5) 0%, transparent 70%),
+        #04080A;
+      display:flex; align-items:center; justify-content:center;
+      position:relative; overflow:hidden;
+    }
+    /* Grain */
+    .about-hero::after {
+      content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+      opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:300px 300px;
+    }
+    .about-hero::before { display:none; }
+    .hero-inner {
+      position:relative; z-index:3;
+      text-align:center; padding:0 4rem;
+      display:flex; flex-direction:column; align-items:center; gap:1.4rem;
+    }
+    .hero-eyebrow {
+      font-family:'Unbounded',sans-serif; font-size:.52rem; font-weight:400;
+      letter-spacing:7px; text-transform:uppercase; color:rgba(240,226,204,.38);
+    }
+    .hero-title {
+      font-family:'Bodoni Moda',serif; font-style:italic; font-weight:900;
+      font-size:clamp(4rem,12vw,10rem); line-height:.82; letter-spacing:-.02em;
+      color:var(--cream);
+    }
+    .hero-title span { color:var(--red); }
+    .hero-sub {
+      font-family:'Space Grotesk',sans-serif; font-size:1rem; line-height:1.8;
+      color:rgba(240,226,204,.45); max-width:520px;
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      z-index:3; display:flex; flex-direction:column; align-items:center; gap:.6rem;
+    }
+    .scroll-cue span {
+      font-family:'Unbounded',sans-serif; font-size:.38rem; letter-spacing:4px;
+      text-transform:uppercase; color:rgba(240,226,204,.25);
+    }
+    .scroll-cue-line {
+      width:1px; height:48px;
+      background:linear-gradient(to bottom, rgba(200,56,32,.6), transparent);
+      animation:scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform:scaleY(1); opacity:.6; }
+      50%       { transform:scaleY(.6); opacity:1; }
+    }
+
+    /* ── TICKER ── */
+    .ticker-strip {
+      background:var(--selva); padding:.8rem 0; overflow:hidden;
+      border-top:1px solid rgba(245,239,224,.08); border-bottom:1px solid rgba(245,239,224,.08);
+    }
+    .ticker-inner {
+      display:inline-flex; gap:2.5rem; white-space:nowrap;
+      animation:tick 22s linear infinite;
+    }
+    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-inner span {
+      font-family:'Unbounded',sans-serif; font-size:.6rem; font-weight:700;
+      letter-spacing:5px; text-transform:uppercase; color:var(--cream);
+    }
+    .ticker-inner i { color:rgba(245,239,224,.35); font-style:normal; }
+
+    /* ── SHARED ── */
+    .container { max-width:1300px; margin:0 auto; padding:0 4rem; }
+    .x-label {
+      font-family:'Unbounded',sans-serif; font-size:.58rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase; color:var(--red2); margin-bottom:1.6rem;
+    }
+    .section-num {
+      font-family:'Unbounded',sans-serif; font-size:.42rem; font-weight:400;
+      letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,.2);
+      margin-bottom:.6rem;
+    }
+
+    /* ── ABOUT THE BAND ── */
+    .about-band {
+      background:var(--bg); border-top:1px solid rgba(240,226,204,.04);
+      padding:8rem 2rem 5rem;
+      scroll-margin-top:80px;
+    }
+    .about-editorial {
+      max-width:760px; width:100%; margin:0 auto;
+      display:flex; flex-direction:column; align-items:center;
+      gap:0; text-align:center;
+    }
+    .about-heading {
+      font-family:'Unbounded',sans-serif; font-weight:900;
+      font-size:clamp(2.2rem,5vw,4rem); line-height:.9; letter-spacing:-.03em;
+      text-transform:uppercase; color:var(--cream); margin-bottom:1rem;
+    }
+    .about-subtitle {
+      font-family:'Unbounded',sans-serif; font-size:.44rem; font-weight:400;
+      letter-spacing:4px; text-transform:uppercase;
+      color:rgba(240,226,204,.42); margin-bottom:2.4rem;
+    }
+    .about-subtitle span { color:var(--red2); }
+    /* Body copy */
+    .about-body { max-width:720px; width:100%; }
+    .about-body p {
+      font-size:.95rem; line-height:1.92; color:rgba(240,226,204,.6);
+      margin-bottom:1rem;
+    }
+    .about-body p:last-child { margin-bottom:0; }
+    .about-body p strong { color:var(--cream); font-weight:500; }
+    /* Scroll indicator */
+    .scroll-indicator {
+      display:flex; flex-direction:column; align-items:center; gap:1rem;
+      margin-top:3rem; opacity:.75;
+    }
+    .scroll-indicator-label {
+      font-family:'Unbounded',sans-serif; font-size:.5rem;
+      letter-spacing:5px; text-transform:uppercase; color:var(--cream);
+    }
+    .scroll-arrow {
+      width:1px; height:48px;
+      background:linear-gradient(to bottom, var(--cream), transparent);
+      position:relative;
+      animation:scrollFloat 2s ease-in-out infinite;
+    }
+    .scroll-arrow::after {
+      content:''; position:absolute; bottom:0; left:50%;
+      transform:translateX(-50%) rotate(45deg);
+      width:8px; height:8px;
+      border-right:1.5px solid var(--cream);
+      border-bottom:1.5px solid var(--cream);
+    }
+    @keyframes scrollFloat {
+      0%,100% { transform:translateY(0); opacity:.75; }
+      50%      { transform:translateY(8px); opacity:1; }
+    }
+
+    /* Stats row — centered */
+    .stats-row {
+      display:flex; justify-content:center; gap:0;
+      border-top:1px solid rgba(240,226,204,.07);
+      border-bottom:1px solid rgba(240,226,204,.07);
+      padding:2rem 0; width:100%; max-width:580px;
+    }
+    .stat {
+      display:flex; flex-direction:column; align-items:center; gap:.35rem;
+      padding:0 3rem; text-align:center;
+      border-right:1px solid rgba(240,226,204,.07);
+    }
+    .stat:last-child { border-right:none; }
+    .stat-num {
+      font-family:'Unbounded',sans-serif; font-size:2rem; font-weight:900;
+      color:var(--cream); line-height:1;
+    }
+    .stat-num span { color:var(--red2); }
+    .stat-lbl {
+      font-family:'Unbounded',sans-serif; font-size:.38rem; font-weight:400;
+      letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,.4);
+    }
+
+    /* Split layout — used by Our Story */
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+    .split.reverse { direction:rtl; }
+    .split.reverse > * { direction:ltr; }
+    .split-content { display:flex; flex-direction:column; gap:1.4rem; }
+    .split-content h2 {
+      font-family:'Unbounded',sans-serif; font-weight:900;
+      font-size:clamp(2rem,3.5vw,3.8rem); line-height:.88; letter-spacing:-.03em;
+      text-transform:uppercase; color:var(--cream);
+    }
+    .split-content h2 em { font-style:normal; color:var(--red2); display:block; }
+    .split-content p { font-size:.9rem; line-height:1.85; color:rgba(240,226,204,.6); }
+    .split-content p strong { color:var(--cream); font-weight:500; }
+
+    /* ── QUOTE BAND ── */
+    .quote-band {
+      background:var(--selva); padding:5rem 0;
+      border-top:1px solid rgba(240,226,204,.06);
+      border-bottom:1px solid rgba(240,226,204,.06);
+    }
+    .quote-inner {
+      max-width:860px; margin:0 auto; text-align:center; padding:0 4rem;
+    }
+    .quote-mark {
+      font-family:'Bodoni Moda',serif; font-size:5rem; line-height:.5;
+      color:var(--red); opacity:.5; display:block; margin-bottom:1rem;
+    }
+    .quote-text {
+      font-family:'Bodoni Moda',serif; font-style:italic; font-weight:700;
+      font-size:clamp(1.3rem,3vw,2.2rem); line-height:1.4; letter-spacing:-.01em;
+      color:var(--cream);
+    }
+    .quote-attr {
+      font-family:'Unbounded',sans-serif; font-size:.44rem; font-weight:400;
+      letter-spacing:4px; text-transform:uppercase; color:var(--gold);
+      margin-top:1.8rem;
+    }
+
+    /* ── OUR STORY ── */
+    .our-story {
+      padding:10rem 0; background:#060808;
+      border-top:1px solid rgba(240,226,204,.04);
+    }
+    /* Director card over image */
+    .director-frame {
+      position:relative;
+    }
+    .director-frame img {
+      width:100%; height:auto; display:block;
+      filter:brightness(.82) saturate(1.05);
+    }
+    .director-card {
+      position:absolute; bottom:0; left:0; right:0;
+      background:linear-gradient(to top, rgba(10,12,10,.92) 0%, transparent 60%);
+      padding:2rem 1.8rem 1.5rem;
+    }
+    .director-name {
+      font-family:'Unbounded',sans-serif; font-size:.8rem; font-weight:700;
+      letter-spacing:-.01em; text-transform:uppercase; color:var(--cream);
+      margin-bottom:.3rem;
+    }
+    .director-title {
+      font-family:'Unbounded',sans-serif; font-size:.38rem; font-weight:400;
+      letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+    }
+    /* Gold italic quote */
+    .inline-quote {
+      font-family:'Space Grotesk',sans-serif; font-weight:500;
+      font-size:1rem; line-height:1.65; color:var(--gold);
+      margin:1rem 0;
+    }
+
+    /* Timeline */
+    .timeline { display:flex; flex-direction:column; gap:0; margin:1.6rem 0; }
+    .tl-item {
+      display:grid; grid-template-columns:64px 1fr; gap:1.2rem;
+      padding:.9rem 0; border-bottom:1px solid rgba(240,226,204,.06);
+    }
+    .tl-item:last-child { border-bottom:none; }
+    .tl-year {
+      font-family:'Unbounded',sans-serif; font-size:.5rem; font-weight:700;
+      letter-spacing:1px; color:var(--red2); line-height:1.6;
+      padding-top:.1rem;
+    }
+    .tl-text { font-size:.82rem; line-height:1.7; color:rgba(240,226,204,.58); }
+    .tl-text strong { color:var(--cream); font-weight:500; }
+
+    /* ── CASA BANDIDO ── */
+    .casa-section {
+      position:relative; overflow:hidden;
+      min-height:100vh;
+      display:flex; align-items:center;
+    }
+    .casa-bg {
+      position:absolute; inset:0; z-index:0;
+    }
+    .casa-bg img {
+      width:100%; height:100%; object-fit:cover; object-position:center;
+      filter:brightness(.42) saturate(1.1);
+    }
+    .casa-overlay {
+      position:absolute; inset:0; z-index:1;
+      background:rgba(10,12,10,.38);
+    }
+    .casa-grid {
+      position:relative; z-index:2;
+      width:100%; display:grid;
+      grid-template-columns:42% 58%;
+      min-height:100vh;
+    }
+    /* Left column — title side */
+    .casa-left {
+      display:flex; flex-direction:column; justify-content:center;
+      padding:5rem 3.5rem 5rem 4rem; gap:1.6rem;
+      background:linear-gradient(to right, rgba(10,12,10,.88) 0%, rgba(10,12,10,.60) 70%, transparent 100%);
+    }
+    .casa-left h2 {
+      font-family:'Unbounded',sans-serif; font-weight:900;
+      font-size:clamp(2.6rem,5vw,5.2rem); line-height:.82; letter-spacing:-.04em;
+      text-transform:uppercase; color:var(--cream);
+    }
+    .casa-left h2 em { color:var(--red2); font-style:normal; display:block; }
+    /* Right column — text side */
+    .casa-right {
+      display:flex; flex-direction:column; justify-content:center;
+      padding:5rem 4rem 5rem 3rem; gap:1.2rem;
+      background:linear-gradient(to left, rgba(10,12,10,.82) 0%, rgba(10,12,10,.55) 65%, transparent 100%);
+    }
+    .casa-right p {
+      font-size:.9rem; line-height:1.9; color:rgba(240,226,204,.68);
+    }
+    .casa-right p strong { color:var(--cream); font-weight:500; }
+    .casa-address {
+      display:inline-flex; align-items:center; gap:.8rem; align-self:flex-start;
+      margin-top:.6rem;
+      border:1px solid rgba(240,226,204,.18); padding:.7rem 1.2rem;
+      font-family:'Unbounded',sans-serif; font-size:.4rem; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,.52);
+    }
+    .casa-address span { color:var(--gold); }
+
+    /* ── BAND MEMBERS STRIP ── */
+    .members-strip {
+      padding:8rem 0; background:var(--bg);
+      border-top:1px solid rgba(240,226,204,.04);
+    }
+    .members-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1px; background:rgba(240,226,204,.06);
+      margin-top:4rem;
+    }
+    .member-card {
+      background:var(--bg); position:relative; overflow:hidden;
+      display:flex; flex-direction:column;
+    }
+    .member-card img {
+      width:100%; aspect-ratio:4/5; object-fit:cover;
+      filter:brightness(.78) saturate(1);
+      transition:transform .7s cubic-bezier(.16,1,.36,1), filter .5s;
+    }
+    .member-card:hover img { transform:scale(1.05); filter:brightness(.95) saturate(1.15); }
+    .member-info {
+      padding:1.2rem 1.5rem; display:flex; flex-direction:column; gap:.3rem;
+      border-top:1px solid rgba(240,226,204,.05);
+    }
+    .member-instrument {
+      font-family:'Unbounded',sans-serif; font-size:.38rem; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase; color:var(--red2);
+    }
+
+    /* ── BOOK CTA ── */
+    .book-cta {
+      padding:9rem 0; text-align:center;
+      background:
+        radial-gradient(ellipse at 50% 100%, rgba(200,56,32,0.12) 0%, transparent 55%),
+        #040606;
+      border-top:1px solid rgba(240,226,204,.04);
+    }
+    .book-cta-eyebrow {
+      font-family:'Unbounded',sans-serif; font-size:.5rem; font-weight:700;
+      letter-spacing:5px; text-transform:uppercase; color:var(--gold); margin-bottom:1.8rem;
+    }
+    .book-cta h2 {
+      font-family:'Unbounded',sans-serif; font-weight:900;
+      font-size:clamp(2.8rem,5.5vw,5.5rem); line-height:.88; letter-spacing:-.04em;
+      text-transform:uppercase; color:var(--cream); margin-bottom:1.2rem;
+    }
+    .book-cta h2 span { color:var(--red); }
+    .book-cta p {
+      font-size:.9rem; line-height:1.8; color:rgba(240,226,204,.45);
+      max-width:480px; margin:0 auto 3rem;
+    }
+    .cta-buttons { display:flex; justify-content:center; gap:1.4rem; flex-wrap:wrap; }
+    .btn-cta {
+      font-family:'Unbounded',sans-serif; font-size:.48rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase;
+      padding:1.1rem 2.6rem; border:1.5px solid var(--dim);
+      color:var(--cream); transition:all .32s cubic-bezier(.16,1,.36,1);
+      display:inline-block;
+    }
+    .btn-cta:hover { border-color:var(--red2); color:var(--red2); transform:translateY(-2px); }
+    .btn-cta.fill {
+      background:var(--red); border-color:var(--red);
+    }
+    .btn-cta.fill:hover {
+      background:#b02f1a; border-color:#b02f1a;
+      transform:translateY(-2px); box-shadow:0 8px 28px rgba(200,56,32,.32);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--bg); padding:3rem 4rem;
+      display:flex; justify-content:space-between; align-items:center;
+      border-top:3px solid var(--selva);
+    }
+    footer img { height:36px; opacity:.45; }
+    footer p {
+      font-family:'Unbounded',sans-serif; font-size:.52rem; font-weight:400;
+      letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,0.55);
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .75s ease, transform .75s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    .reveal-l { opacity:0; transform:translateX(-40px); transition:opacity .75s ease, transform .75s ease; }
+    .reveal-l.visible { opacity:1; transform:none; }
+    .reveal-r { opacity:0; transform:translateX(40px); transition:opacity .75s ease, transform .75s ease; }
+    .reveal-r.visible { opacity:1; transform:none; }
+    .d1 { transition-delay:.12s; } .d2 { transition-delay:.24s; } .d3 { transition-delay:.36s; }
+
+    /* ══ RESPONSIVE ══ */
+
+    /* ── TABLET  768px–1023px ── */
+    @media (max-width:1023px) {
+      /* Hamburger replaces full nav */
+      nav { padding:1.3rem 2rem; grid-template-columns:1fr auto; }
+      .nav-links { display:none; }
+      .nav-hamburger { display:flex; }
+      .mobile-drawer { display:flex; }
+
+      .container { padding:0 2.5rem; }
+      .about-hero { min-height:80vh; }
+      .hero-inner { padding:0 3rem; }
+
+      /* About band */
+      .about-band { padding:7rem 2.5rem 4.5rem; }
+      .about-heading { font-size:clamp(2rem,5vw,3.2rem); }
+
+      /* Our Story — stack on tablet */
+      .split { grid-template-columns:1fr; gap:3.5rem; }
+      .split.reverse { direction:ltr; }
+      .director-frame { max-width:520px; margin:0 auto; }
+      .our-story { padding:6rem 0; }
+
+      /* Stats */
+      .stats-row { max-width:100%; }
+
+      /* Casa Bandido — stack columns */
+      .casa-grid { grid-template-columns:1fr; }
+      .casa-left {
+        padding:5rem 2.5rem 2.5rem;
+        background:linear-gradient(to bottom, rgba(10,12,10,.92) 0%, rgba(10,12,10,.70) 100%);
+      }
+      .casa-right {
+        padding:1.5rem 2.5rem 5rem;
+        background:linear-gradient(to bottom, rgba(10,12,10,.70) 0%, rgba(10,12,10,.92) 100%);
+      }
+
+      /* Quote */
+      .quote-inner { padding:0 3rem; }
+
+      /* Book CTA */
+      .book-cta { padding:7rem 0; }
+
+      /* Members */
+      .members-grid { grid-template-columns:1fr 1fr; }
+
+      /* Footer */
+      footer { padding:2.5rem 3rem; }
+    }
+
+    /* ── MOBILE  ≤767px ── */
+    @media (max-width:767px) {
+      nav { padding:1.2rem 1.2rem; }
+      .container { padding:0 1.5rem; }
+
+      /* Hero */
+      .about-hero { min-height:70vh; }
+      .hero-inner { padding:0 1.5rem; }
+      .hero-eyebrow { font-size:.44rem; letter-spacing:3px; }
+
+      /* About band */
+      .about-band { padding:6rem 1.5rem 3.5rem; }
+      .about-heading { font-size:clamp(1.7rem,7vw,2.6rem); }
+      .about-subtitle { font-size:.4rem; letter-spacing:3px; }
+      .about-body { max-width:100%; }
+      .about-body p { font-size:.9rem; }
+
+      /* Our Story */
+      .our-story { padding:5rem 0; }
+      .split-content h2 { font-size:clamp(1.8rem,6vw,3rem); }
+      .director-frame { max-width:420px; margin:0 auto; }
+
+      /* Stats */
+      .stats-row { flex-direction:column; border-bottom:none; padding:1.5rem 0; }
+      .stat { border-right:none; border-bottom:1px solid rgba(240,226,204,.07); padding:1rem 0; }
+      .stat:last-child { border-bottom:none; }
+      .stat-num { font-size:1.6rem; }
+
+      /* Quote */
+      .quote-inner { padding:0 1.5rem; }
+      .quote-section { padding:5rem 0; }
+
+      /* Casa Bandido */
+      .casa-section { min-height:auto; }
+      .casa-grid { grid-template-columns:1fr; min-height:auto; }
+      .casa-left {
+        padding:5rem 1.5rem 2rem;
+        background:linear-gradient(to bottom, rgba(10,12,10,.94) 0%, rgba(10,12,10,.72) 100%);
+      }
+      .casa-left h2 { font-size:clamp(2rem,8vw,3.5rem); }
+      .casa-right {
+        padding:1rem 1.5rem 4rem;
+        background:linear-gradient(to bottom, rgba(10,12,10,.72) 0%, rgba(10,12,10,.94) 100%);
+      }
+      .casa-right p { font-size:.88rem; }
+      .casa-address { font-size:.38rem; padding:.6rem 1rem; }
+
+      /* Live shots */
+      .live-shots { padding:4rem 0; }
+      .live-grid { grid-template-columns:1fr 1fr; gap:.5rem; }
+
+      /* Book CTA */
+      .book-cta { padding:5rem 0; }
+      .book-cta h2 { font-size:clamp(1.8rem,7vw,3rem); }
+      .cta-buttons { flex-direction:column; align-items:center; gap:1rem; }
+      .btn-cta { width:100%; max-width:340px; text-align:center; padding:1rem 1.5rem; }
+
+      /* Members */
+      .members-strip { padding:5rem 0; }
+      .members-grid { grid-template-columns:1fr; }
+
+      /* Footer */
+      footer { flex-direction:column; gap:1.4rem; text-align:center; padding:2.5rem 1.5rem; }
+      footer img { margin:0 auto; }
+    }
+
+    /* ── SMALL MOBILE  ≤480px ── */
+    @media (max-width:480px) {
+      .about-heading { font-size:clamp(1.5rem,8vw,2.2rem); }
+      .casa-left h2 { font-size:clamp(1.8rem,9vw,2.8rem); }
+      .live-grid { grid-template-columns:1fr; }
+      .cta-buttons { flex-direction:column; align-items:center; }
+      .btn-cta { width:100%; text-align:center; }
+      .scroll-indicator { margin-top:2rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-links">
+    <a href="concept4.html">Home</a>
+    <a href="concept4.html#videos">Videos</a>
+    <a href="concept4.html#shows">Shows</a>
+  </div>
+  <div class="nav-links right">
+    <a href="about.html" class="active">About</a>
+    <a href="concept4.html#contact" class="nav-book">Book Us</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="concept4.html">Home</a>
+  <a href="concept4.html#videos">Videos</a>
+  <a href="concept4.html#shows">Shows</a>
+  <a href="about.html">About</a>
+  <a href="concept4.html#contact" class="drawer-book">Book a Show</a>
+</div>
+
+<!-- ══ ABOUT THE BAND ══ -->
+<section class="about-band" id="about-band">
+  <div class="about-editorial reveal">
+
+    <h1 class="about-heading">About the Band</h1>
+    <p class="about-subtitle">Bay Area Salsa Dura <span>•</span> Est. 2015</p>
+
+    <div class="about-body">
+      <p>Formed in <strong>Daly City in 2015</strong>, Los Kimberos was created from a deep love for salsa, culture, and the powerful connection that Latin music brings to people. Since the beginning, the band has carried the heartbeat of the Bay Area into every performance, bringing high-energy rhythms and unforgettable nights to audiences across San Francisco and beyond.</p>
+      <p>Blending the soul of <strong>classic salsa dura</strong> with the fire of timba and modern Latin influences, Los Kimberos delivers a sound that is both timeless and electric. From blazing horn sections and driving percussion to smooth vocals that capture the spirit of old-school salsa, every performance is built to move the crowd and keep the dance floor alive.</p>
+      <p>More than just a band, Los Kimberos represents <strong>community, tradition</strong>, and the vibrant Latin culture woven throughout the Bay Area.</p>
+    </div>
+
+    <div class="scroll-indicator" aria-hidden="true">
+      <span class="scroll-indicator-label">Scroll to Continue</span>
+      <div class="scroll-arrow"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ OUR STORY ══ -->
+<section class="our-story" id="our-story">
+  <div class="container">
+    <div class="split reverse">
+
+      <div class="split-content reveal-l">
+        <div>
+          <div class="section-num">02 / 03</div>
+          <div class="x-label">Our Story</div>
+        </div>
+        <h2>A Family <em>Legacy</em></h2>
+        <p>Los Kimberos was founded by the visionary <strong>Anthony "Tony" Price</strong>, whose passion for authentic salsa and dedication to Latin music built the foundation of the band. Tony's spirit, energy, and love for the craft continue to inspire every performance and every note played.</p>
+
+        <blockquote class="inline-quote">"Tony built something that was bigger than music — he built a community. We honor that every time we play."</blockquote>
+
+        <p>Following Tony's passing, his legacy lives on through <strong>Samuel Villazana Price</strong>, who stepped forward to carry the torch and continue the family tradition. Under Samuel's direction, Los Kimberos honors its roots while bringing fresh energy to the Bay Area salsa scene.</p>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-year">2015</div>
+            <div class="tl-text">Founded in <strong>Daly City</strong> by Anthony "Tony" Price with a core group of lifelong musicians.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2018</div>
+            <div class="tl-text">First performance at <strong>Carnaval San Francisco</strong> — the band's signature annual stage.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2021</div>
+            <div class="tl-text"><strong>Samuel Villazana Price</strong> takes the role of director, carrying the torch forward.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">Now</div>
+            <div class="tl-text">9+ musicians, 10+ years strong — performing festivals, private events &amp; venues across the Bay.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="director-frame reveal-r">
+        <img src="director.jpg" alt="Samuel Villazana Price — Director" onerror="this.style.cssText='background:#111;width:100%;aspect-ratio:3/4;display:block;'"/>
+        <div class="director-card">
+          <div class="director-name">Samuel Villazana Price</div>
+          <div class="director-title">Director · Los Kimberos</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUOTE BAND ══ -->
+<div class="quote-band">
+  <div class="quote-inner reveal">
+    <span class="quote-mark"></span>
+    <p class="quote-text">"We play not just for ourselves, but in honor of those who paved the way. Anthony's vision lives on in every performance."</p>
+    <div class="quote-attr">Samuel Villazana Price · Director, Los Kimberos</div>
+  </div>
+</div>
+
+<!-- ══ CASA BANDIDO ══ -->
+<section class="casa-section" id="casa-bandido">
+  <div class="casa-bg">
+    <img src="tonymural.JPG" alt="Casa Bandido — Latin Rock House, Mission District" onerror="this.style.cssText='background:#0d1f12;width:100%;height:100%;display:block;'"/>
+  </div>
+  <div class="casa-overlay"></div>
+  <div class="casa-grid">
+
+    <div class="casa-left reveal-l">
+      <div>
+        <div class="section-num">03 / 03</div>
+        <div class="x-label">Mission District · San Francisco</div>
+      </div>
+      <h2>The Latin<br/>Rock House<br/><em>Casa Bandido</em></h2>
+    </div>
+
+    <div class="casa-right reveal-r">
+      <p>Shortly after Tony's passing, the community paid tribute to his lasting impact by painting his portrait on the iconic <strong>Latin Rock House</strong>, also known as Casa Bandido, in San Francisco's Mission District.</p>
+      <p>Owned by local musician and cultural figure <strong>Richard Segovia</strong>, the house is a vibrant landmark celebrating the birth and evolution of Latin Rock in the Mission.</p>
+      <p>Tony's image now stands among legendary musicians and cultural figures — a permanent reminder of his influence, passion, and contribution to Bay Area Latin music culture.</p>
+      <div class="casa-address">
+        <span>&#9670;</span> 25th St &amp; York St · San Francisco · CA 94110
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</section>
+
+<!-- ══ BOOK CTA ══ -->
+<section class="book-cta">
+  <div class="container">
+    <div class="reveal">
+      <div class="book-cta-eyebrow">Festivals · Private Events · Venues</div>
+      <h2>Bring the <span>Energy</span><br/>to Your Event</h2>
+      <p>Ready to give your audience an unforgettable night of live salsa? We'd love to hear about your event.</p>
+      <div class="cta-buttons">
+        <a href="concept4.html#contact" class="btn-cta fill">Book Los Kimberos</a>
+        <a href="concept4.html" class="btn-cta">Back to Home</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="loskimberoslogo.png" alt="Los Kimberos" onerror="this.style.display='none'"/>
+  <p>© 2026 Los Kimberos · San Francisco Bay Area</p>
+  <p>Feel the Rhythm of the Bay</p>
+</footer>
+
+<script>
+  /* ── SCROLL REVEAL ── */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+  }), { threshold:.07 });
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => io.observe(el));
+
+  /* ── MOBILE NAV ── */
+  const hamburger = document.getElementById('hamburger');
+  const drawer    = document.getElementById('mobileDrawer');
+
+  function toggleMenu(open) {
+    hamburger.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  hamburger.addEventListener('click', () => toggleMenu(!hamburger.classList.contains('open')));
+  drawer.querySelectorAll('a').forEach(l => l.addEventListener('click', () => toggleMenu(false)));
+  drawer.addEventListener('click', e => { if(e.target === drawer) toggleMenu(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') toggleMenu(false); });
+
+  /* ── CASA BANDIDO ACCORDION ── */
+  const casaToggle = document.querySelector('.casa-toggle');
+  if (casaToggle) {
+    casaToggle.addEventListener('click', function() {
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      document.getElementById('casaMore').classList.toggle('open', !expanded);
+    });
+  }
+</script>
+</body>
+</html>

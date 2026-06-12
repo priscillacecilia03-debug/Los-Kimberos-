@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Los Kimberos — Website Redesign Concepts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; scroll-snap-type:y mandatory; }
+    :root {
+      --bg:     #090909;
+      --bg2:    #111;
+      --cream:  #EDE8DF;
+      --gold:   #B8922E;
+      --red:    #9B1A1A;
+      --mid:    rgba(237,232,223,.45);
+      --dim:    rgba(237,232,223,.12);
+    }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--cream); overflow-x:hidden; }
+    a { text-decoration:none; color:inherit; }
+    img { max-width:100%; display:block; }
+
+    /* ── COVER PAGE ── */
+    .cover {
+      min-height:100vh; scroll-snap-align:start;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:6rem 2rem;
+      position:relative; overflow:hidden;
+      background:var(--bg);
+    }
+    /* Subtle radial */
+    .cover::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(155,26,26,.12) 0%, transparent 70%);
+    }
+    .cover-kicker {
+      font-size:.6rem; font-weight:500; letter-spacing:7px;
+      text-transform:uppercase; color:var(--gold);
+      margin-bottom:3rem; position:relative;
+    }
+    .cover-logo { margin-bottom:3rem; position:relative; }
+    .cover-logo img { height:80px; margin:0 auto; }
+    .cover-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(2.5rem,7vw,7rem);
+      font-weight:300; font-style:italic;
+      line-height:.9; letter-spacing:-.02em;
+      margin-bottom:1.5rem; position:relative;
+    }
+    .cover-subtitle {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1rem,2.5vw,2rem);
+      font-weight:300; font-style:italic;
+      color:var(--mid); margin-bottom:4rem; position:relative;
+    }
+    .cover-rule { width:80px; height:1px; background:var(--gold); margin:0 auto 4rem; opacity:.5; }
+    /* Concept pills */
+    .concept-pills { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; margin-bottom:3.5rem; }
+    .pill {
+      font-size:.6rem; font-weight:500; letter-spacing:3px; text-transform:uppercase;
+      padding:.6rem 1.5rem; border:1px solid var(--dim); color:var(--mid);
+      border-radius:100px; transition:all .25s; cursor:pointer;
+    }
+    .pill:hover { border-color:var(--gold); color:var(--gold); }
+    .scroll-cue {
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      font-size:.55rem; letter-spacing:5px; text-transform:uppercase; color:var(--dim);
+      display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    }
+    .scroll-cue::before {
+      content:''; width:1px; height:40px;
+      background:linear-gradient(to bottom, var(--gold), transparent);
+      animation:pulse2 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse2 { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    /* ── CONCEPT SECTION ── */
+    .concept-section {
+      scroll-snap-align:start;
+      min-height:100vh;
+      display:flex; flex-direction:column;
+      padding:4rem 0 0;
+      position:relative;
+    }
+    /* Concept header band */
+    .c-header {
+      padding:2.5rem 5vw 2.5rem;
+      display:grid; grid-template-columns:auto 1fr auto;
+      gap:3rem; align-items:center;
+      border-bottom:1px solid var(--dim);
+    }
+    .c-num {
+      font-family:'Cormorant Garamond',serif;
+      font-size:5rem; font-weight:300; font-style:italic;
+      line-height:1; color:var(--gold); opacity:.4;
+    }
+    .c-meta {}
+    .c-tag {
+      font-size:.58rem; font-weight:500; letter-spacing:5px;
+      text-transform:uppercase; color:var(--gold); margin-bottom:.5rem;
+    }
+    .c-name {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.8rem,4vw,4rem);
+      font-weight:300; font-style:italic; line-height:1;
+    }
+    .c-desc { font-size:.82rem; font-weight:300; color:var(--mid); margin-top:.6rem; max-width:600px; }
+    .c-link {
+      font-size:.6rem; font-weight:500; letter-spacing:3.5px; text-transform:uppercase;
+      color:var(--cream); padding:1rem 2.2rem;
+      border:1px solid var(--dim); white-space:nowrap;
+      transition:all .25s;
+    }
+    .c-link:hover { border-color:var(--gold); color:var(--gold); }
+
+    /* Preview Frame */
+    .preview-frame {
+      flex:1; margin:2rem 5vw 0; position:relative;
+      border:1px solid var(--dim); border-bottom:none; border-radius:12px 12px 0 0;
+      overflow:hidden; min-height:60vh;
+    }
+    /* Browser chrome bar */
+    .browser-bar {
+      background:#1a1a1a; padding:.7rem 1rem;
+      display:flex; align-items:center; gap:.8rem;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .b-dots { display:flex; gap:.35rem; }
+    .b-dot { width:10px; height:10px; border-radius:50%; }
+    .b-dot.r { background:#FF5F57; }
+    .b-dot.y { background:#FFBD2E; }
+    .b-dot.g { background:#28CA41; }
+    .b-url {
+      flex:1; background:rgba(255,255,255,.05); border-radius:5px;
+      padding:.3rem 1rem; font-size:.65rem; color:rgba(255,255,255,.3);
+      text-align:center; max-width:400px; margin:0 auto;
+    }
+    iframe {
+      width:100%; height:calc(60vh - 40px);
+      border:none; display:block;
+      background:#fff;
+    }
+
+    /* Palette + Mood tags row */
+    .c-footer {
+      padding:1.5rem 5vw;
+      display:flex; align-items:center; gap:2rem; flex-wrap:wrap;
+      border-top:1px solid var(--dim);
+    }
+    .palette { display:flex; gap:.5rem; align-items:center; }
+    .swatch { width:22px; height:22px; border-radius:50%; border:1px solid rgba(255,255,255,.08); }
+    .c-footer-label { font-size:.55rem; letter-spacing:4px; text-transform:uppercase; color:var(--mid); }
+    .tags { display:flex; gap:.6rem; flex-wrap:wrap; }
+    .tag {
+      font-size:.55rem; letter-spacing:2.5px; text-transform:uppercase;
+      color:var(--mid); padding:.3rem .9rem;
+      border:1px solid var(--dim); border-radius:100px;
+    }
+
+    /* ── CONCEPT 1 THEME ── */
+    .c1 .c-num { color:#B8922E; }
+    .c1 .c-tag { color:#B8922E; }
+
+    /* ── CONCEPT 2 THEME ── */
+    .c2 { background:var(--bg2); }
+    .c2 .c-num { color:#E8A000; }
+    .c2 .c-tag { color:#E8A000; }
+
+    /* ── CONCEPT 3 THEME ── */
+    .c3 .c-num { color:#C48B2A; }
+    .c3 .c-tag { color:#C48B2A; }
+
+    /* ── CONCEPT 4 THEME ── */
+    .c4 { background:var(--bg2); }
+    .c4 .c-num { color:#C0001A; }
+    .c4 .c-tag { color:#C0001A; }
+
+    /* ── FINAL CTA ── */
+    .final {
+      scroll-snap-align:start;
+      min-height:60vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; padding:6rem 2rem;
+      background:var(--bg);
+      border-top:1px solid var(--dim);
+    }
+    .final-kicker { font-size:.6rem; letter-spacing:6px; text-transform:uppercase; color:var(--gold); margin-bottom:2rem; }
+    .final-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(2rem,6vw,6rem);
+      font-weight:300; font-style:italic; line-height:.95; margin-bottom:2rem;
+    }
+    .final-sub { font-size:.88rem; font-weight:300; color:var(--mid); margin-bottom:3rem; max-width:560px; }
+    .final-btns { display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center; }
+    .final-btn {
+      font-size:.62rem; font-weight:500; letter-spacing:4px; text-transform:uppercase;
+      padding:1rem 2.5rem; border:1px solid var(--dim); color:var(--cream);
+      transition:all .25s;
+    }
+    .final-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .final-btn.primary { background:var(--red); border-color:var(--red); }
+    .final-btn.primary:hover { background:transparent; border-color:var(--red); color:var(--red); }
+
+    /* ── STICKY TOP NAV ── */
+    .top-nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:rgba(9,9,9,.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--dim);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.8rem 3rem;
+    }
+    .top-nav-brand {
+      display:flex; align-items:center; gap:1rem;
+    }
+    .top-nav-brand img { height:32px; opacity:.75; }
+    .top-nav-brand span { font-size:.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--mid); }
+    .top-nav-links { display:flex; gap:1.5rem; }
+    .top-nav-links a {
+      font-size:.55rem; font-weight:400; letter-spacing:3px; text-transform:uppercase;
+      color:var(--mid); transition:color .2s;
+    }
+    .top-nav-links a:hover { color:var(--cream); }
+  </style>
+</head>
+<body>
+
+<!-- STICKY TOP NAV -->
+<div class="top-nav">
+  <div class="top-nav-brand">
+    <img src="loskimberoslogo.png" alt="Los Kimberos" onerror="this.style.display='none'"/>
+    <span>Website Redesign · 2025</span>
+  </div>
+  <div class="top-nav-links">
+    <a href="#concept1">Concept 1</a>
+    <a href="#concept2">Concept 2</a>
+    <a href="#concept3">Concept 3</a>
+    <a href="#concept4">Concept 4</a>
+  </div>
+</div>
+
+<!-- ═══════ COVER ═══════ -->
+<section class="cover">
+  <p class="cover-kicker">Creative Direction · 2025</p>
+  <div class="cover-logo">
+    <img src="loskimberoslogo.png" alt="Los Kimberos" onerror="this.style.display='none'"/>
+  </div>
+  <h1 class="cover-title">Los Kimberos<br/>Website Redesign</h1>
+  <p class="cover-subtitle">Four distinct homepage concepts — scroll to explore</p>
+  <div class="cover-rule"></div>
+  <div class="concept-pills">
+    <a href="#concept1" class="pill">01 — Minimal Luxury Editorial</a>
+    <a href="#concept2" class="pill">02 — Vintage Salsa Poster</a>
+    <a href="#concept3" class="pill">03 — Dark Cinematic</a>
+    <a href="#concept4" class="pill">04 — Experimental Typography</a>
+  </div>
+  <p style="font-size:.65rem; font-weight:300; color:var(--mid); max-width:560px; line-height:1.8; position:relative;">
+    Each concept presents a fully distinct visual identity — unique color system, typography, layout structure, and mood — while preserving all original content about Los Kimberos.
+  </p>
+  <div class="scroll-cue">Scroll to explore</div>
+</section>
+
+<!-- ═══════ CONCEPT 1 ═══════ -->
+<section class="concept-section c1" id="concept1">
+  <div class="c-header">
+    <div class="c-num">01</div>
+    <div class="c-meta">
+      <div class="c-tag">Minimal Luxury Editorial</div>
+      <h2 class="c-name">The Luxury Fashion Direction</h2>
+      <p class="c-desc">Warm cream canvas, dramatic Cormorant Garamond italic serif, editorial whitespace, gold rule accents, and a restrained color system. Feels like Vogue meets a high-end arts institution.</p>
+    </div>
+    <a href="concept1.html" target="_blank" class="c-link">View Full Design →</a>
+  </div>
+  <div class="preview-frame">
+    <div class="browser-bar">
+      <div class="b-dots"><div class="b-dot r"></div><div class="b-dot y"></div><div class="b-dot g"></div></div>
+      <div class="b-url">loskimberos.com — Concept 1</div>
+    </div>
+    <iframe src="concept1.html" loading="lazy" title="Concept 1 Preview"></iframe>
+  </div>
+  <div class="c-footer">
+    <div class="c-footer-label">Palette</div>
+    <div class="palette">
+      <div class="swatch" style="background:#F0E2CC;" title="Crema"></div>
+      <div class="swatch" style="background:#0A0C0A;" title="Abismo"></div>
+      <div class="swatch" style="background:#1A3530;" title="Selva"></div>
+      <div class="swatch" style="background:#C83820;" title="Fuego"></div>
+      <div class="swatch" style="background:#C8941A;" title="Oro"></div>
+    </div>
+    <div class="c-footer-label" style="margin-left:2rem;">Mood</div>
+    <div class="tags">
+      <span class="tag">Editorial</span>
+      <span class="tag">Minimal</span>
+      <span class="tag">Luxury</span>
+      <span class="tag">Serif-driven</span>
+      <span class="tag">High Whitespace</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CONCEPT 2 ═══════ -->
+<section class="concept-section c2" id="concept2">
+  <div class="c-header">
+    <div class="c-num">02</div>
+    <div class="c-meta">
+      <div class="c-tag">Vintage Salsa Poster</div>
+      <h2 class="c-name">The Poster Art Direction</h2>
+      <p class="c-desc">Deep crimson red backgrounds, Abril Fatface display typography, decorative poster borders, grain texture, and a warm cream/gold palette. Feels like a 1960s Cuban salsa concert poster brought to life digitally.</p>
+    </div>
+    <a href="concept2.html" target="_blank" class="c-link">View Full Design →</a>
+  </div>
+  <div class="preview-frame">
+    <div class="browser-bar">
+      <div class="b-dots"><div class="b-dot r"></div><div class="b-dot y"></div><div class="b-dot g"></div></div>
+      <div class="b-url">loskimberos.com — Concept 2</div>
+    </div>
+    <iframe src="concept2.html" loading="lazy" title="Concept 2 Preview"></iframe>
+  </div>
+  <div class="c-footer">
+    <div class="c-footer-label">Palette</div>
+    <div class="palette">
+      <div class="swatch" style="background:#C83820;" title="Fuego"></div>
+      <div class="swatch" style="background:#1A3530;" title="Selva"></div>
+      <div class="swatch" style="background:#F0E2CC;" title="Crema"></div>
+      <div class="swatch" style="background:#C8941A;" title="Oro"></div>
+    </div>
+    <div class="c-footer-label" style="margin-left:2rem;">Mood</div>
+    <div class="tags">
+      <span class="tag">Vintage</span>
+      <span class="tag">Poster Art</span>
+      <span class="tag">Cuban Salsa</span>
+      <span class="tag">Handcrafted</span>
+      <span class="tag">Warm Texture</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CONCEPT 3 ═══════ -->
+<section class="concept-section c3" id="concept3">
+  <div class="c-header">
+    <div class="c-num">03</div>
+    <div class="c-meta">
+      <div class="c-tag">Dark Cinematic</div>
+      <h2 class="c-name">The Film &amp; Photography Direction</h2>
+      <p class="c-desc">Near-black with warm amber accents, Playfair Display italic serif, film-grain overlay, and cinematic spacing. Photography is treated with subtle desaturation. Feels like a concert documentary or festival film brand.</p>
+    </div>
+    <a href="concept3.html" target="_blank" class="c-link">View Full Design →</a>
+  </div>
+  <div class="preview-frame">
+    <div class="browser-bar">
+      <div class="b-dots"><div class="b-dot r"></div><div class="b-dot y"></div><div class="b-dot g"></div></div>
+      <div class="b-url">loskimberos.com — Concept 3</div>
+    </div>
+    <iframe src="concept3.html" loading="lazy" title="Concept 3 Preview"></iframe>
+  </div>
+  <div class="c-footer">
+    <div class="c-footer-label">Palette</div>
+    <div class="palette">
+      <div class="swatch" style="background:#0A0C0A;" title="Abismo"></div>
+      <div class="swatch" style="background:#1A3530;" title="Selva"></div>
+      <div class="swatch" style="background:#D4701C;" title="Brasa"></div>
+      <div class="swatch" style="background:#F0E2CC;" title="Crema"></div>
+    </div>
+    <div class="c-footer-label" style="margin-left:2rem;">Mood</div>
+    <div class="tags">
+      <span class="tag">Cinematic</span>
+      <span class="tag">Moody</span>
+      <span class="tag">Photo-forward</span>
+      <span class="tag">Film Grain</span>
+      <span class="tag">Intimate</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CONCEPT 4 ═══════ -->
+<section class="concept-section c4" id="concept4">
+  <div class="c-header">
+    <div class="c-num">04</div>
+    <div class="c-meta">
+      <div class="c-tag">Experimental Typography</div>
+      <h2 class="c-name">The Type-as-Art Direction</h2>
+      <p class="c-desc">Unbounded ultra-bold geometric type at massive scale, deep red color blocking, outlined/ghost letterforms, horizontal scroll gallery, and asymmetric grid layouts. Typography becomes the visual experience.</p>
+    </div>
+    <a href="concept4.html" target="_blank" class="c-link">View Full Design →</a>
+  </div>
+  <div class="preview-frame">
+    <div class="browser-bar">
+      <div class="b-dots"><div class="b-dot r"></div><div class="b-dot y"></div><div class="b-dot g"></div></div>
+      <div class="b-url">loskimberos.com — Concept 4</div>
+    </div>
+    <iframe src="concept4.html" loading="lazy" title="Concept 4 Preview"></iframe>
+  </div>
+  <div class="c-footer">
+    <div class="c-footer-label">Palette</div>
+    <div class="palette">
+      <div class="swatch" style="background:#0A0C0A;" title="Abismo"></div>
+      <div class="swatch" style="background:#C83820;" title="Fuego"></div>
+      <div class="swatch" style="background:#1A3530;" title="Selva"></div>
+      <div class="swatch" style="background:#F0E2CC;" title="Crema"></div>
+    </div>
+    <div class="c-footer-label" style="margin-left:2rem;">Mood</div>
+    <div class="tags">
+      <span class="tag">Experimental</span>
+      <span class="tag">Bold</span>
+      <span class="tag">Type-led</span>
+      <span class="tag">Graphic</span>
+      <span class="tag">Contemporary</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FINAL CTA ═══════ -->
+<section class="final">
+  <p class="final-kicker">Next Steps</p>
+  <h2 class="final-title">Choose your<br/>direction</h2>
+  <p class="final-sub">Select the concept that resonates most, or mix elements from multiple directions. Each design uses your real photos, logo, and content exactly as provided.</p>
+  <div class="final-btns">
+    <a href="concept1.html" target="_blank" class="final-btn">01 — Minimal Editorial</a>
+    <a href="concept2.html" target="_blank" class="final-btn">02 — Vintage Poster</a>
+    <a href="concept3.html" target="_blank" class="final-btn">03 — Dark Cinematic</a>
+    <a href="concept4.html" target="_blank" class="final-btn">04 — Experimental</a>
+  </div>
+</section>
+
+</body>
+</html>

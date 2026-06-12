@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Los Kimberos — San Francisco Salsa Band</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ============================================================
+       KEYFRAME ANIMATIONS
+    ============================================================ */
+    @keyframes fadeIn       { from { opacity: 0; }                         to { opacity: 1; } }
+    @keyframes fadeUp       { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeLeft     { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes fadeRight    { from { opacity: 0; transform: translateX(60px); }  to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse        { 0%,100% { transform: scale(1); }            50% { transform: scale(1.04); } }
+    @keyframes shimmer      { 0% { background-position: -400% center; }   100% { background-position: 400% center; } }
+    @keyframes float        { 0%,100% { transform: translateY(0); }       50%  { transform: translateY(-14px); } }
+    @keyframes gradShift    { 0%,100% { background-position: 0% 50%; }    50%  { background-position: 100% 50%; } }
+    @keyframes spin         { from { transform: rotate(0deg); }            to   { transform: rotate(360deg); } }
+    @keyframes waveBar      { 0%,100% { transform: scaleY(0.3); }         50%  { transform: scaleY(1); } }
+    @keyframes noteFloat    { 0%   { opacity:1; transform: translateY(0) rotate(0deg); }
+                              100% { opacity:0; transform: translateY(-120px) rotate(25deg); } }
+    @keyframes rippleOut    { from { transform: scale(0); opacity: 0.5; } to { transform: scale(5); opacity: 0; } }
+    @keyframes glitchSlip   { 0%,90%,100% { transform: translate(0); }
+                              91% { transform: translate(-3px,0); }
+                              93% { transform: translate(3px,0); }
+                              95% { transform: translate(-2px,1px); }
+                              97% { transform: translate(2px,-1px); } }
+    @keyframes borderGlow   { 0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }
+                              50%      { box-shadow: 0 0 20px 4px rgba(251,191,36,0.35); } }
+    @keyframes countUp      { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ============================================================
+       SCROLLED REVEAL CLASSES
+    ============================================================ */
+    .reveal           { opacity: 0; transform: translateY(40px);  transition: opacity 0.85s cubic-bezier(.22,1,.36,1), transform 0.85s cubic-bezier(.22,1,.36,1); }
+    .reveal-left      { opacity: 0; transform: translateX(-60px); transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1); }
+    .reveal-right     { opacity: 0; transform: translateX(60px);  transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1); }
+    .reveal.visible, .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.22s; }
+    .delay-3 { transition-delay: 0.36s; }
+    .delay-4 { transition-delay: 0.5s; }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(251,191,36,0.18);
+      transition: background 0.3s;
+    }
+    .nav-container {
+      max-width: 1400px; margin: 0 auto;
+      padding: 0.9rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .nav-logo img {
+      height: 52px; width: auto;
+      filter: drop-shadow(0 0 8px rgba(251,191,36,0.4));
+      transition: filter 0.3s;
+    }
+    .nav-logo img:hover { filter: drop-shadow(0 0 16px rgba(251,191,36,0.7)); }
+    .nav-logo-text {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase;
+      background: linear-gradient(135deg, #fbbf24, #f97316, #ef4444, #fbbf24);
+      background-size: 300% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-link {
+      font-weight: 700; font-size: 0.85rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: rgba(255,255,255,0.8);
+      transition: color 0.25s; position: relative; padding-bottom: 4px;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: #fbbf24;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: #fbbf24; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-ig {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border: 1.5px solid rgba(251,191,36,0.4);
+      border-radius: 30px; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; color: #fbbf24;
+      transition: all 0.3s;
+    }
+    .nav-ig:hover {
+      background: #fbbf24; color: #000;
+      box-shadow: 0 4px 20px rgba(251,191,36,0.35);
+    }
+    .ig-icon {
+      width: 16px; height: 16px; border: 1.5px solid currentColor;
+      border-radius: 4px; position: relative; flex-shrink: 0; display: inline-block;
+    }
+    .ig-icon::after {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 7px; height: 7px; border: 1.5px solid currentColor; border-radius: 50%;
+    }
+    .ig-icon::before {
+      content: ''; position: absolute; top: 2px; right: 2px;
+      width: 2px; height: 2px; background: currentColor; border-radius: 50%;
+    }
+
+    /* Mobile nav */
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+    .nav-toggle span { width: 26px; height: 2.5px; background: #fbbf24; border-radius: 2px; transition: all 0.3s; }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #7c2d12 0%, #dc2626 30%, #f97316 60%, #fbbf24 100%);
+      background-size: 300% 300%;
+      animation: gradShift 8s ease-in-out infinite;
+    }
+    /* Band photo as hero background */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 1;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center top;
+      opacity: 0.22;
+      transition: opacity 0.5s;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 50%, rgba(120,20,0,0.4) 100%);
+    }
+    /* Particle dots */
+    .hero-dots {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(251,191,36,0.15) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-content {
+      position: relative; z-index: 10;
+      text-align: center; padding: 2rem 1.5rem;
+      max-width: 1000px;
+      animation: fadeUp 1s ease both;
+    }
+    /* Logo in hero */
+    .hero-logo {
+      display: flex; justify-content: center; margin-bottom: 1.5rem;
+      animation: fadeIn 0.8s ease both;
+    }
+    .hero-logo img {
+      height: 160px; width: auto;
+      filter: drop-shadow(0 8px 30px rgba(0,0,0,0.6));
+      animation: float 5s ease-in-out infinite;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .hero-logo img:hover { transform: scale(1.06); }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fbbf24; color: #000;
+      padding: 6px 20px; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+      animation: fadeIn 0.9s ease 0.15s both;
+    }
+    .hero-badge-dot {
+      width: 8px; height: 8px; background: #dc2626; border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(5rem, 16vw, 14rem);
+      font-weight: 900; line-height: 0.88;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, #fde68a 30%, #fbbf24 55%, #f97316 80%, #fff 100%);
+      background-size: 300% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5s linear infinite, glitchSlip 10s ease-in-out infinite;
+      text-shadow: none;
+      filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.4));
+      margin-bottom: 0.6rem;
+    }
+    .hero-sub {
+      font-size: clamp(1.1rem, 3.5vw, 2rem);
+      color: #fde68a; font-style: italic; font-weight: 400;
+      margin-bottom: 0.6rem; letter-spacing: 0.02em;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+    .hero-mission {
+      font-size: clamp(0.95rem, 2vw, 1.3rem);
+      color: rgba(255,255,255,0.75); letter-spacing: 0.04em;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s ease 0.45s both;
+    }
+    .hero-mission strong { color: #fbbf24; }
+
+    .hero-btns {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.8s ease 0.6s both;
+    }
+    .btn-fire {
+      padding: 1rem 2.4rem; border-radius: 999px;
+      background: linear-gradient(135deg, #fbbf24, #f97316, #dc2626);
+      background-size: 200% auto;
+      color: #fff; font-weight: 900; font-size: 1rem; letter-spacing: 0.05em;
+      text-transform: uppercase; border: none; cursor: pointer;
+      transition: all 0.35s; display: inline-block;
+      animation: pulse 3s ease-in-out infinite 1s;
+      box-shadow: 0 8px 30px rgba(249,115,22,0.4);
+    }
+    .btn-fire:hover {
+      background-position: right center; transform: scale(1.06) translateY(-3px);
+      box-shadow: 0 14px 40px rgba(249,115,22,0.55);
+      animation: none;
+    }
+    .btn-outline {
+      padding: 1rem 2.4rem; border-radius: 999px;
+      background: transparent; color: #fff; font-weight: 700;
+      font-size: 1rem; letter-spacing: 0.05em; text-transform: uppercase;
+      border: 2px solid rgba(255,255,255,0.35); cursor: pointer;
+      display: inline-block; transition: all 0.3s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; transform: translateY(-2px); }
+
+    /* Scroll indicator */
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); animation: fadeIn 1s ease 1.5s both;
+    }
+    .hero-scroll .arrow { animation: float 1.8s ease-in-out infinite; font-size: 1.2rem; }
+
+    /* ============================================================
+       SECTION COMMONS
+    ============================================================ */
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 5px;
+      text-transform: uppercase; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::before { content: ''; display: block; width: 28px; height: 2px; background: currentColor; }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    .about {
+      background: #000; padding: 7rem 0;
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 7fr 5fr;
+      gap: 5rem; align-items: center; margin-bottom: 6rem;
+    }
+    .about .section-label { color: #f97316; }
+    .about-title {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      font-weight: 900; line-height: 0.9; margin-bottom: 2rem;
+      letter-spacing: 0.01em;
+    }
+    .about-title .y { color: #fbbf24; }
+    .about-title .r { color: #ef4444; }
+    .about-title .o { color: #f97316; }
+
+    .about-desc { display: flex; flex-direction: column; gap: 1.2rem; max-width: 540px; }
+    .about-desc p { font-size: 1.1rem; color: #d1d5db; line-height: 1.8; }
+    .about-desc .hl { color: #f97316; font-weight: 700; }
+    .about-desc .hly { color: #fbbf24; font-weight: 700; }
+
+    .about-stats {
+      display: flex; gap: 3rem; margin-top: 2.5rem;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: 4rem; font-weight: 900; line-height: 1;
+      display: block; margin-bottom: 4px;
+    }
+    .stat-num.y { color: #fbbf24; }
+    .stat-num.o { color: #f97316; }
+    .stat-lbl { font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* About image */
+    .about-image { position: relative; }
+    .img-frame {
+      position: relative; border-radius: 1.2rem; overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    }
+    .img-frame img { width: 100%; height: 560px; object-fit: cover; object-position: center top; }
+    .img-frame .img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(220,38,38,0.5) 0%, transparent 50%);
+    }
+    .img-accent-y {
+      position: absolute; width: 120px; height: 120px; border-radius: 50%;
+      background: #fbbf24; bottom: -24px; right: -24px; z-index: -1;
+      animation: float 5s ease-in-out infinite;
+    }
+    .img-accent-r {
+      position: absolute; width: 80px; height: 80px; border-radius: 50%;
+      background: #ef4444; top: -20px; left: -20px; z-index: -1;
+      animation: float 6s ease-in-out infinite 1s;
+    }
+
+    /* ============================================================
+       STORY / LEGACY SECTION (no "Legacy of Passion" heading)
+    ============================================================ */
+    .story {
+      background: linear-gradient(135deg, #0d0d0d 0%, #111 100%);
+      padding: 6rem 0;
+    }
+    .story .section-label { color: #fbbf24; }
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .story-img {
+      position: relative;
+    }
+    .story-img .img-frame img {
+      height: 640px; object-position: top center;
+    }
+    .story-img .img-frame .img-overlay {
+      background: linear-gradient(to top, rgba(249,115,22,0.55) 0%, transparent 55%);
+    }
+    .story-img .caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem;
+      background: linear-gradient(to top, #000, transparent);
+    }
+    .story-img .caption .cap-name { font-size: 1.4rem; font-weight: 900; color: #fff; }
+    .story-img .caption .cap-role { color: #fbbf24; font-size: 1rem; margin-top: 2px; }
+
+    .story-text { display: flex; flex-direction: column; gap: 1.5rem; }
+    .story-text h2 {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 900; line-height: 0.9;
+    }
+    .story-text h2 .y { color: #fbbf24; }
+    .story-text p { font-size: 1.05rem; color: #d1d5db; line-height: 1.85; }
+    .story-text .hlw { color: #fff; font-weight: 700; }
+    .story-text .hly { color: #fbbf24; font-weight: 700; }
+
+    .story-quote {
+      background: linear-gradient(to right, rgba(251,191,36,0.12), rgba(239,68,68,0.12));
+      border-left: 4px solid #fbbf24;
+      padding: 1.5rem 1.8rem; border-radius: 0 0.6rem 0.6rem 0;
+      margin-top: 0.5rem;
+    }
+    .story-quote .q-text { font-size: 1.15rem; font-style: italic; color: #fff; line-height: 1.7; }
+    .story-quote .q-auth { color: #fbbf24; font-weight: 700; font-size: 0.9rem; margin-top: 0.8rem; letter-spacing: 0.05em; }
+
+    /* ============================================================
+       CASA BANDIDO SECTION
+    ============================================================ */
+    .casa {
+      background: #000; padding: 6rem 0;
+    }
+    .casa .section-label { color: #ef4444; }
+    .casa-grid {
+      display: grid; grid-template-columns: 5fr 7fr;
+      gap: 5rem; align-items: center;
+    }
+    .casa-text h2 {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 900; line-height: 0.95;
+      margin-bottom: 1.5rem; color: #fff;
+    }
+    .casa-text h2 span { color: #ef4444; }
+    .casa-text p { font-size: 1.05rem; color: #d1d5db; line-height: 1.85; margin-bottom: 1.2rem; }
+    .casa-text .address {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      color: #fbbf24; margin-top: 0.5rem;
+      border: 1px solid rgba(251,191,36,0.3); padding: 8px 18px; border-radius: 999px;
+    }
+    .casa-imgs {
+      display: grid; grid-template-rows: 1fr 1fr; gap: 16px; height: 640px;
+    }
+    .casa-imgs .img-frame { border-radius: 1rem; overflow: hidden; height: 100%; }
+    .casa-imgs .img-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .casa-imgs .img-frame:hover img { transform: scale(1.04); }
+    .casa-imgs .img-frame .img-overlay { background: linear-gradient(to top, rgba(0,0,0,0.4), transparent); }
+
+    /* ============================================================
+       WHAT MAKES US SPECIAL
+    ============================================================ */
+    .highlights {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a0a00 100%);
+      padding: 6rem 0;
+    }
+    .highlights .section-label { color: #f97316; justify-content: center; }
+    .highlights .section-label::before { display: none; }
+    .highlights-title {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(3.5rem, 9vw, 7rem); font-weight: 900;
+      line-height: 0.9; text-align: center; margin-bottom: 4rem;
+    }
+    .highlights-title span { color: #fbbf24; }
+
+    .cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    }
+    .card {
+      border-radius: 1.2rem; overflow: hidden; position: relative;
+      transition: transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.35s;
+    }
+    .card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+    .card-img { position: relative; height: 260px; overflow: hidden; }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .card:hover .card-img img { transform: scale(1.08); }
+    .card-img .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); }
+    .card-body { padding: 1.8rem; }
+    .card-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .card-icon svg { width: 26px; height: 26px; }
+    .card-title { font-size: 1.7rem; font-weight: 900; margin-bottom: 0.6rem; color: #fff; }
+    .card-desc  { font-size: 1rem; color: rgba(255,255,255,0.85); line-height: 1.6; }
+
+    .card-r { background: linear-gradient(135deg, #dc2626 0%, #f97316 100%); }
+    .card-o { background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%); }
+    .card-y { background: linear-gradient(135deg, #fbbf24 0%, #dc2626 100%); }
+    .icon-y { background: #fbbf24; color: #000; }
+    .icon-r { background: #ef4444; color: #fff; }
+    .icon-o { background: #f97316; color: #fff; }
+
+    /* ============================================================
+       PHOTO GALLERY
+    ============================================================ */
+    .gallery {
+      background: #0a0a0a;
+      padding: 5rem 0;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.6rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .gal-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.6rem;
+      cursor: pointer;
+    }
+    .gal-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s cubic-bezier(.22,1,.36,1);
+    }
+    .gal-item:hover img { transform: scale(1.06); }
+    .gal-large {
+      grid-row: 1 / 2;
+      min-height: 420px;
+    }
+    .gal-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      grid-row: 1 / 2;
+    }
+    .gal-col .gal-item {
+      flex: 1;
+      min-height: 200px;
+    }
+    .gal-wide {
+      grid-column: 1 / -1;
+      min-height: 280px;
+    }
+    .gal-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.4rem;
+    }
+    .gal-item:hover .gal-overlay { opacity: 1; }
+    .gal-label {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+    @media (max-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+      .gal-large, .gal-wide { grid-column: auto; grid-row: auto; min-height: 260px; }
+      .gal-col { flex-direction: column; }
+      .gal-col .gal-item { min-height: 220px; }
+    }
+
+    /* ============================================================
+       EVENTS
+    ============================================================ */
+    .events { background: #000; padding: 6rem 0; }
+    .events .section-label { color: #fbbf24; }
+    .events-title {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 900; line-height: 0.9;
+      margin-bottom: 3.5rem;
+    }
+    .events-title span { color: #f97316; }
+
+    .event-list { display: flex; flex-direction: column; gap: 0; }
+    .ev-loading { display: flex; gap: .6rem; padding: 3rem 0; }
+    .ev-loading-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(251,191,36,.3); animation: evPulse 1.4s ease-in-out infinite; }
+    .ev-loading-dot:nth-child(2) { animation-delay: .2s; }
+    .ev-loading-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes evPulse { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+    .ev-empty { font-size: .72rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,.28); padding: 3rem 0; }
+    .event-row {
+      display: grid; grid-template-columns: 100px 1fr auto;
+      gap: 2.5rem; align-items: center;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.35s cubic-bezier(.22,1,.36,1);
+      cursor: default;
+    }
+    .event-row:hover {
+      padding-left: 1.5rem;
+      border-bottom-color: #fbbf24;
+      background: rgba(251,191,36,0.04);
+    }
+    .event-row:hover .ev-num { color: #fbbf24; }
+    .ev-num {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: 3.8rem; font-weight: 900; color: #f97316;
+      line-height: 1; transition: color 0.3s;
+    }
+    .ev-month { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #6b7280; margin-top: 2px; }
+    .ev-info h3 { font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 4px; }
+    .ev-info .ev-meta {
+      display: flex; gap: 1.2rem; flex-wrap: wrap;
+      font-size: 0.82rem; color: #9ca3af; letter-spacing: 0.04em;
+    }
+    .ev-meta .dot { color: #f97316; }
+    .ev-btn {
+      padding: 10px 26px; border: 1.5px solid rgba(251,191,36,0.45);
+      border-radius: 999px; color: #fbbf24;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      transition: all 0.3s; white-space: nowrap;
+    }
+    .ev-btn:hover { background: #fbbf24; color: #000; border-color: #fbbf24; transform: scale(1.04); }
+
+    /* ============================================================
+       CONTACT / BOOKING
+    ============================================================ */
+    .contact {
+      background: linear-gradient(135deg, #7f1d1d 0%, #7c2d12 40%, #1a0a00 100%);
+      padding: 6rem 0;
+    }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact .section-label { color: #fbbf24; }
+    .contact-title {
+      font-family: 'Bebas Neue', 'Inter', sans-serif;
+      font-size: clamp(4rem, 10vw, 8rem); font-weight: 900; line-height: 0.88;
+      margin-bottom: 1.5rem;
+    }
+    .contact-title span { color: #fbbf24; }
+    .contact-sub { font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-bottom: 2.5rem; line-height: 1.7; }
+
+    .contact-methods { display: flex; flex-direction: column; gap: 1.4rem; }
+    .c-method {
+      display: flex; align-items: center; gap: 1rem;
+      transition: color 0.25s; font-size: 1rem;
+    }
+    .c-method:hover { color: #fbbf24; }
+    .c-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .c-method:hover .c-icon { transform: scale(1.12); }
+    .c-icon svg { width: 22px; height: 22px; }
+    .c-label { font-size: 0.78rem; color: #9ca3af; margin-bottom: 2px; }
+    .c-val   { font-weight: 700; }
+
+    .social-section { margin-top: 2.5rem; }
+    .social-label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9ca3af; margin-bottom: 1rem; }
+    .social-links { display: flex; gap: 1rem; }
+    .soc-link {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .soc-link:hover { background: #fbbf24; transform: scale(1.12); }
+    .soc-link svg { width: 20px; height: 20px; }
+
+    /* Form */
+    .form-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1.4rem; padding: 2.8rem;
+      animation: borderGlow 4s ease-in-out infinite;
+    }
+    .form-title { font-size: 1.7rem; font-weight: 900; margin-bottom: 1.8rem; color: #fbbf24; }
+    .form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; color: rgba(255,255,255,0.7); }
+    .form-input, .form-textarea {
+      padding: 0.85rem 1rem; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 0.7rem;
+      color: #fff; font-family: inherit; font-size: 1rem;
+      transition: border-color 0.25s, background 0.25s; outline: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: #fbbf24; background: rgba(251,191,36,0.06); }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.3); }
+    .form-textarea { resize: vertical; min-height: 110px; }
+    .form-submit {
+      width: 100%; padding: 1rem; border: none; border-radius: 0.7rem; cursor: pointer;
+      background: linear-gradient(to right, #fbbf24, #f97316, #dc2626);
+      background-size: 200% auto;
+      color: #fff; font-weight: 900; font-size: 1.05rem; letter-spacing: 0.04em;
+      transition: all 0.35s; margin-top: 0.4rem;
+      text-transform: uppercase;
+    }
+    .form-submit:hover { background-position: right center; transform: scale(1.03); box-shadow: 0 8px 30px rgba(249,115,22,0.45); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: #000; padding: 3.5rem 0 1.5rem;
+      border-top: 1px solid rgba(251,191,36,0.15);
+    }
+    .footer-inner {
+      display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .footer-logo img { height: 72px; width: auto; filter: drop-shadow(0 4px 14px rgba(251,191,36,0.3)); }
+    .footer-tagline { color: #6b7280; font-size: 0.95rem; }
+    .footer-links { display: flex; gap: 2rem; justify-content: center; }
+    .footer-link { color: #9ca3af; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-link:hover { color: #fbbf24; }
+    .footer-bottom {
+      text-align: center; padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: #4b5563; font-size: 0.82rem;
+    }
+
+    /* ============================================================
+       SOUND WAVE BARS (rhythm widget)
+    ============================================================ */
+    .beat-bar {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 500;
+      display: flex; align-items: flex-end; gap: 3px; height: 36px;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      padding: 6px 14px; border-radius: 999px;
+      border: 1px solid rgba(251,191,36,0.3); cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    .beat-bar:hover { border-color: #fbbf24; }
+    .beat-bar span {
+      display: block; width: 4px; background: #f97316; border-radius: 2px;
+      height: 10px; transform-origin: bottom; transition: background 0.3s;
+    }
+    .beat-bar.playing span { animation: waveBar 0.7s ease-in-out infinite; background: #fbbf24; }
+    .beat-bar.playing span:nth-child(2) { animation-delay: 0.1s; }
+    .beat-bar.playing span:nth-child(3) { animation-delay: 0.2s; }
+    .beat-bar.playing span:nth-child(4) { animation-delay: 0.3s; }
+    .beat-bar.playing span:nth-child(5) { animation-delay: 0.15s; }
+    .beat-bar .beat-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: #9ca3af; margin-left: 6px; }
+
+    /* Note particles */
+    .note-p { position: fixed; pointer-events: none; z-index: 9990; font-size: 20px; opacity: 0; animation: noteFloat 2s ease-out forwards; }
+
+    /* Click ripple */
+    .ripple-el { position: fixed; border-radius: 50%; pointer-events: none; border: 2px solid rgba(251,191,36,0.5); z-index: 9980; animation: rippleOut 0.7s ease-out forwards; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .about-grid  { grid-template-columns: 1fr; gap: 3rem; }
+      .story-grid  { grid-template-columns: 1fr; gap: 3rem; }
+      .casa-grid   { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-grid{ grid-template-columns: 1fr; gap: 3rem; }
+      .cards       { grid-template-columns: 1fr; gap: 1.2rem; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 1.2rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(0,0,0,0.98); padding: 1.5rem;
+        gap: 1rem; border-bottom: 1px solid rgba(251,191,36,0.2);
+      }
+      .about-grid, .story-grid, .casa-grid, .contact-grid { gap: 2.5rem; }
+      .cards { gap: 1rem; }
+      .event-row { grid-template-columns: 70px 1fr; gap: 1.2rem; }
+      .ev-btn { display: none; }
+      .casa-imgs { height: 360px; grid-template-rows: 1fr; }
+      .casa-imgs .img-frame:last-child { display: none; }
+      .footer-links { flex-wrap: wrap; }
+      .beat-bar { display: none; }
+    }
+
+    /* Image placeholder fallback */
+    .img-placeholder {
+      background: linear-gradient(135deg, #1a0a00, #2d1206);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(251,191,36,0.2); font-size: 0.75rem; letter-spacing: 2px;
+      text-transform: uppercase; font-weight: 700;
+      text-align: center; padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== NAVIGATION ==================== -->
+<nav class="nav" id="nav">
+  <div class="nav-container">
+    <a href="#" class="nav-logo">
+      <!-- Logo: save your logo image as "logo.png" in this same folder -->
+      <img src="logo.png" alt="Los Kimberos Logo"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+      <span class="nav-logo-text" style="display:none;">Los Kimberos</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#about"    class="nav-link">About</a>
+      <a href="#events"   class="nav-link">Events</a>
+      <a href="#contact"  class="nav-link">Book Us</a>
+      <a href="https://www.instagram.com/loskimberos/" target="_blank" class="nav-ig">
+        <span class="ig-icon"></span> Instagram
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <!-- Band photo: save as "band-group.jpg" in this folder -->
+    <img src="band-group.jpg" alt="Los Kimberos Band"
+         onerror="this.style.display='none';" />
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-dots"></div>
+
+  <div class="hero-content">
+    <div class="hero-logo">
+      <img src="logo.png" alt="Los Kimberos"
+           onerror="this.style.display='none';" />
+    </div>
+
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Since 2015 &nbsp;&#183;&nbsp; San Francisco, CA
+    </div>
+
+    <h1 class="hero-title">Los Kimberos</h1>
+    <p class="hero-sub">San Francisco Salsa Band</p>
+    <p class="hero-mission">
+      Feel the rhythm of the Bay.
+      <strong>Formed in Daly City. Built for every dance floor.</strong>
+    </p>
+
+    <div class="hero-btns">
+      <a href="#about"   class="btn-fire">Our Story</a>
+      <a href="#contact" class="btn-outline">Book Us</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span class="arrow">&#8595;</span>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="reveal-left">
+        <div class="section-label">About the Band</div>
+        <h2 class="about-title">
+          <span class="y">FEEL</span> THE<br/>
+          <span class="r">RHYTHM</span> OF THE<br/>
+          <span class="o">BAY</span>
+        </h2>
+        <div class="about-desc">
+          <p>
+            Formed in <span class="hl">Daly City</span> in 2015, <span class="hly">Los Kimberos</span> was created from a deep love for salsa, culture, and the powerful connection that Latin music brings to people. Since the beginning, the band has carried the heartbeat of the Bay Area into every performance, bringing high-energy rhythms and unforgettable nights to audiences across San Francisco and beyond.
+          </p>
+          <p>
+            Blending the soul of classic <span class="hl">salsa dura</span> with the fire of timba and modern Latin influences, Los Kimberos delivers a sound that is both timeless and electric. From blazing horn sections and driving percussion to smooth vocals that capture the spirit of old-school salsa, every performance is built to move the crowd and keep the dance floor alive.
+          </p>
+          <p>
+            More than just a band, Los Kimberos represents <span class="hly">community, tradition, and the vibrant Latin culture</span> woven throughout the Bay Area.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-num y" data-target="10">0</span>
+            <div class="stat-lbl">Years Together</div>
+          </div>
+          <div class="stat">
+            <span class="stat-num o" data-target="9">0</span>
+            <div class="stat-lbl">Musicians</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-image reveal-right">
+        <div class="img-frame">
+          <!-- Band group photo: save as "band-group.jpg" -->
+          <img src="groupphoto.jpg" alt="Los Kimberos performing"
+               onerror="this.className='img-placeholder'; this.outerHTML='<div class=\'img-frame\'><div class=\'img-placeholder\' style=\'height:560px\'>Place band-group.jpg here</div></div>';" />
+          <div class="img-overlay"></div>
+        </div>
+        <div class="img-accent-y"></div>
+        <div class="img-accent-r"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STORY (no "Legacy of Passion" heading) ==================== -->
+<section class="story" id="story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-img reveal-left">
+        <div class="img-frame">
+          <!-- Director photo: save as "director.jpg" -->
+          <img src="director.jpg" alt="Samuel Villazana Price — Current Director"
+               onerror="this.className='img-placeholder'; this.outerHTML='<div class=\'img-frame\'><div class=\'img-placeholder\' style=\'height:640px\'>Place director.jpg here</div></div>';" />
+          <div class="img-overlay"></div>
+        </div>
+        <div class="caption">
+          <div class="cap-name">Samuel Villazana Price</div>
+          <div class="cap-role">Current Director</div>
+        </div>
+      </div>
+
+      <div class="story-text reveal-right">
+        <div class="section-label" style="color:#fbbf24;">Our Story</div>
+        <p>
+          Los Kimberos was founded by the visionary <span class="hlw">Anthony "Tony" Price</span>, whose passion
+          for authentic salsa and dedication to Latin music built the foundation of the band. Tony's spirit, energy,
+          and love for the craft continue to inspire every performance and every note played.
+        </p>
+        <p>
+          Following Tony's passing, his legacy lives on through <span class="hly">Samuel Villazana Price</span>,
+          who stepped forward to carry the torch and continue the family tradition. Under Samuel's direction,
+          Los Kimberos honors its roots while bringing fresh energy to the Bay Area salsa scene.
+        </p>
+        <div class="story-quote">
+          <p class="q-text">
+            "We play not just for ourselves, but in honor of those who paved the way.
+            Anthony's vision lives on in every performance."
+          </p>
+          <p class="q-auth">— Samuel Villazana Price</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CASA BANDIDO ==================== -->
+<section class="casa" id="casa">
+  <div class="container">
+    <div class="casa-grid">
+      <div class="casa-text reveal-left">
+        <div class="section-label" style="color:#ef4444;">Mission District</div>
+        <h2>The <span>Latin Rock House</span><br/>Casa Bandido</h2>
+        <p>
+          Shortly after Tony's passing, the community paid tribute to his lasting impact by painting
+          his portrait on the iconic <strong style="color:#fff;">Latin Rock House</strong>, also known as
+          Casa Bandido, in San Francisco's Mission District.
+        </p>
+        <p>
+          Owned by local musician and cultural figure <strong style="color:#fff;">Richard Segovia</strong>,
+          the house is a vibrant landmark celebrating the birth and evolution of Latin Rock in the Mission.
+          Tony's image now stands among legendary musicians and cultural figures, a permanent reminder
+          of his influence, passion, and contribution to Bay Area Latin music culture.
+        </p>
+        <div class="address">
+          25th St &amp; York St, San Francisco, CA 94110
+        </div>
+      </div>
+
+      <div class="casa-imgs reveal-right">
+        <div class="img-frame">
+          <!-- Casa Bandido building: save as "casa-bandido.jpg" -->
+          <img src="latinhouse.jpg" alt="Casa Bandido — Latin Rock House at 25th & York"
+               onerror="this.className='img-placeholder'; this.outerHTML='<div class=\'img-frame\' style=\'height:100%\'><div class=\'img-placeholder\' style=\'height:100%\'>Place casa-bandido.jpg here</div></div>';" />
+          <div class="img-overlay"></div>
+        </div>
+        <div class="img-frame">
+          <!-- Mural photo with people: save as "mural-people.jpg" -->
+          <img src="tonymural.JPG" alt="Los Kimberos at the Mission mural"
+               onerror="this.className='img-placeholder'; this.outerHTML='<div class=\'img-frame\' style=\'height:100%\'><div class=\'img-placeholder\' style=\'height:100%\'>Place mural-people.jpg here</div></div>';" />
+          <div class="img-overlay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PHOTO GALLERY ==================== -->
+<section class="gallery">
+  <div class="gallery-grid">
+    <!-- Large left: band group -->
+    <div class="gal-item gal-large reveal-left">
+      <img src="band-group.jpg" alt="Los Kimberos Band" />
+      <div class="gal-overlay">
+        <span class="gal-label">Los Kimberos Live</span>
+      </div>
+    </div>
+    <!-- Right column stacked -->
+    <div class="gal-col">
+      <div class="gal-item reveal delay-1">
+        <img src="director.jpg" alt="Samuel Villazana Price" />
+        <div class="gal-overlay">
+          <span class="gal-label">Samuel Villazana Price — Director</span>
+        </div>
+      </div>
+      <div class="gal-item reveal delay-2">
+        <img src="mural-people.jpg" alt="Los Kimberos at the Mission" />
+        <div class="gal-overlay">
+          <span class="gal-label">Roots in the Mission</span>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom full-width: Casa Bandido -->
+    <div class="gal-item gal-wide reveal delay-3">
+      <img src="casa-bandido.jpg" alt="Casa Bandido — Latin Rock House" />
+      <div class="gal-overlay">
+        <span class="gal-label">Casa Bandido — 25th &amp; York, San Francisco</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== EVENTS ==================== -->
+<section class="events" id="events">
+  <div class="container">
+    <div class="section-label reveal" style="color:#fbbf24;">Upcoming Shows</div>
+    <h2 class="events-title reveal">
+      LIVE<br/><span>EVENTS</span>
+    </h2>
+    <div id="events-feed" class="event-list">
+      <div class="ev-loading">
+        <span class="ev-loading-dot"></span>
+        <span class="ev-loading-dot"></span>
+        <span class="ev-loading-dot"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACT / BOOKING ==================== -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal-left">
+        <div class="section-label">Booking</div>
+        <h2 class="contact-title">
+          LET'S<br/><span>MAKE</span><br/>MAGIC
+        </h2>
+        <p class="contact-sub">
+          Ready to spice up your venue or event with authentic salsa energy?
+          Hit us up and let's create something unforgettable together.
+        </p>
+
+        <div class="contact-methods">
+          <a href="mailto:sosaprice650@icloud.com" class="c-method">
+            <div class="c-icon icon-y">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <div class="c-label">Email</div>
+              <div class="c-val">sosaprice650@icloud.com</div>
+            </div>
+          </a>
+
+          <a href="tel:+16504389554" class="c-method">
+            <div class="c-icon icon-r">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.19 11.9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="c-label">Phone</div>
+              <div class="c-val">(650) 438-9554</div>
+            </div>
+          </a>
+
+          <div class="c-method">
+            <div class="c-icon icon-o">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="c-label">Based in</div>
+              <div class="c-val">San Francisco, CA — Mission District</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-section">
+          <div class="social-label">Follow Us</div>
+          <div class="social-links">
+            <a href="https://www.instagram.com/loskimberos/" target="_blank" class="soc-link" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <div class="form-card">
+          <h3 class="form-title">Book Los Kimberos</h3>
+          <form class="form" id="bookingForm" onsubmit="return handleForm(event)">
+            <div class="form-group">
+              <label class="form-label" for="fname">Name</label>
+              <input class="form-input" type="text" id="fname" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="femail">Email</label>
+              <input class="form-input" type="email" id="femail" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fdate">Event Date</label>
+              <input class="form-input" type="date" id="fdate" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fmsg">Tell us about your event</label>
+              <textarea class="form-textarea" id="fmsg" rows="5" placeholder="Venue, expected attendance, type of event..." required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send Booking Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <img src="logo.png" alt="Los Kimberos"
+           onerror="this.outerHTML='<div style=\'font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\'>LOS KIMBEROS</div>';" />
+      <p class="footer-tagline">Bringing the heat to the Bay since 2015</p>
+      <div class="footer-links">
+        <a href="#about"   class="footer-link">About</a>
+        <a href="#events"  class="footer-link">Events</a>
+        <a href="#contact" class="footer-link">Book</a>
+        <a href="https://www.instagram.com/loskimberos/" target="_blank" class="footer-link">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Los Kimberos. All rights reserved. &nbsp;&#183;&nbsp; San Francisco, CA
+    </div>
+  </div>
+</footer>
+
+<!-- Salsa beat widget -->
+<div class="beat-bar" id="beatBar" onclick="toggleBeat()" title="Toggle salsa rhythm">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span class="beat-label">Salsa Beat</span>
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+'use strict';
+
+// ── MOBILE NAV ───────────────────────────────────────
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ── SCROLL REVEAL ────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObs.observe(el));
+
+// ── COUNTER ANIMATION ────────────────────────────────
+const counters = document.querySelectorAll('[data-target]');
+const countObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = target / 50;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current) + '+';
+      if (current >= target) clearInterval(timer);
+    }, 28);
+    countObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => countObs.observe(c));
+
+// ── NAV BACKGROUND ON SCROLL ─────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').style.background =
+    window.scrollY > 40 ? 'rgba(0,0,0,0.97)' : 'rgba(0,0,0,0.92)';
+}, { passive: true });
+
+// ── CLICK RIPPLE ─────────────────────────────────────
+document.addEventListener('click', e => {
+  const el = document.createElement('div');
+  el.className = 'ripple-el';
+  const s = 30;
+  el.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - s/2}px;top:${e.clientY - s/2}px`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 800);
+});
+
+// ── FORM SUBMIT ──────────────────────────────────────
+function handleForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit');
+  const orig = btn.textContent;
+  btn.textContent = 'Sent! We\'ll be in touch soon.';
+  btn.style.background = 'linear-gradient(to right, #16a34a, #15803d)';
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.background = '';
+    e.target.reset();
+  }, 4000);
+  return false;
+}
+
+// ── SALSA BEAT ENGINE ────────────────────────────────
+let actx = null, beatInt = null, step = 0, playing = false;
+
+function getCtx() {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+
+function cowbell(t) {
+  const c = getCtx();
+  [562, 845].forEach(f => {
+    const o = c.createOscillator(), g = c.createGain();
+    const ws = c.createWaveShaper();
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) curve[i] = (i / 128 - 1) * 3;
+    ws.curve = curve;
+    o.type = 'square'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    o.connect(ws); ws.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + 0.32);
+  });
+}
+
+function timbale(t) {
+  const c = getCtx();
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = 'square';
+  o.frequency.setValueAtTime(1100, t);
+  o.frequency.exponentialRampToValueAtTime(600, t + 0.04);
+  g.gain.setValueAtTime(0.4, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+  o.connect(g); g.connect(c.destination);
+  o.start(t); o.stop(t + 0.08);
+}
+
+function bongo(t, pitch) {
+  const c = getCtx();
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(pitch, t);
+  o.frequency.exponentialRampToValueAtTime(pitch * 0.5, t + 0.2);
+  g.gain.setValueAtTime(0.38, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+  o.connect(g); g.connect(c.destination);
+  o.start(t); o.stop(t + 0.3);
+}
+
+function tumba(t) {
+  const c = getCtx();
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(90, t);
+  o.frequency.exponentialRampToValueAtTime(42, t + 0.3);
+  g.gain.setValueAtTime(0.45, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+  o.connect(g); g.connect(c.destination);
+  o.start(t); o.stop(t + 0.42);
+}
+
+function hihat(t, open) {
+  const c = getCtx();
+  const buf = c.createBuffer(1, Math.floor(c.sampleRate * (open ? 0.12 : 0.035)), c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource(); src.buffer = buf;
+  const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 7000;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.16, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + (open ? 0.14 : 0.04));
+  src.connect(f); f.connect(g); g.connect(c.destination);
+  src.start(t); src.stop(t + (open ? 0.15 : 0.05));
+}
+
+const STEP_MS = 130;
+const PAT = {
+  cowbell: [1,0,0,0,1,0,0,1,0,0,1,0,0,0,1,0],
+  timbale: [0,0,1,0,0,0,1,0,0,1,0,0,1,0,0,1],
+  bongoH:  [0,0,0,1,0,0,0,1,0,0,0,1,0,0,1,0],
+  bongoL:  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+  hihat:   [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1],
+};
+const NOTE_CHARS = ['♪','♫','♬','♭','♩'];
+let noteCount = 0;
+
+function tick() {
+  const c = getCtx();
+  const t = c.currentTime + 0.04;
+  const s = step % 16;
+  if (PAT.cowbell[s]) cowbell(t);
+  if (PAT.timbale[s]) timbale(t);
+  if (PAT.bongoH[s])  bongo(t, 215);
+  if (PAT.bongoL[s])  tumba(t);
+  if (PAT.hihat[s])   hihat(t, s % 4 === 2);
+  step++;
+  if (playing && noteCount < 6 && Math.random() < 0.25) spawnNote();
+}
+
+function spawnNote() {
+  noteCount++;
+  const el = document.createElement('div');
+  el.className = 'note-p';
+  el.textContent = NOTE_CHARS[Math.floor(Math.random() * NOTE_CHARS.length)];
+  el.style.color = ['#fbbf24','#f97316','#ef4444'][Math.floor(Math.random()*3)];
+  el.style.left = (Math.random() * 80 + 10) + 'vw';
+  el.style.top  = (Math.random() * 50 + 25) + 'vh';
+  el.style.fontSize = (16 + Math.random() * 18) + 'px';
+  el.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
+  document.body.appendChild(el);
+  setTimeout(() => { el.remove(); noteCount--; }, 3200);
+}
+
+function toggleBeat() {
+  const bar = document.getElementById('beatBar');
+  if (playing) {
+    clearInterval(beatInt);
+    playing = false;
+    bar.classList.remove('playing');
+  } else {
+    getCtx();
+    step = 0; tick();
+    beatInt = setInterval(tick, STEP_MS);
+    playing = true;
+    bar.classList.add('playing');
+  }
+}
+
+/* ── EVENTS: Google Sheets via Papa Parse (CORS-safe) ── */
+(function loadEvents() {
+  const CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF1TN1uaUM-HpXO3Zi-CMydGbwhr29JvO8IgXaifnqgCyikN96YmEHu7Qzz6xqd3gJnXhtuWJyeqHu/pub?gid=0&single=true&output=csv';
+  const feed = document.getElementById('events-feed');
+  if (!feed) return;
+  console.log('[Events] Fetching:', CSV);
+
+  function fmtTime(raw) {
+    if (!raw) return '';
+    const m = raw.trim().match(/^(\d+):(\d+).*?(AM|PM)$/i);
+    if (!m) return raw.trim();
+    return `${m[1]}:${m[2]} ${m[3].toUpperCase()}`;
+  }
+
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  Papa.parse(CSV, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      console.log('[Events] Raw CSV parsed. Rows:', results.data.length, '| Headers:', results.meta.fields);
+
+      const now = new Date(); now.setHours(0,0,0,0);
+      console.log('[Events] Today (midnight):', now.toISOString());
+
+      const upcoming = results.data
+        .filter(r => {
+          const d = new Date(r['Event Date']);
+          const passes = !isNaN(d) && d >= now;
+          console.log('[Events] Row:', r['Event Date'], '→', d.toISOString(), '| upcoming:', passes);
+          return passes;
+        })
+        .sort((a, b) => new Date(a['Event Date']) - new Date(b['Event Date']));
+
+      console.log('[Events] Upcoming count:', upcoming.length);
+      feed.innerHTML = '';
+
+      if (!upcoming.length) {
+        feed.innerHTML = '<div class="ev-empty">No upcoming shows — check back soon.</div>';
+        return;
+      }
+
+      upcoming.forEach((ev, i) => {
+        const date  = new Date(ev['Event Date']);
+        const day   = date.getDate();
+        const mo    = MONTHS[date.getMonth()].toUpperCase();
+        const dow   = DAYS[date.getDay()];
+        const venue = ev['Venue Name'] || ev['Event Type'] || 'TBA';
+        const city  = ev['City'] || '';
+        const addr  = ev['Address'] || '';
+        const time  = fmtTime(ev['Start Time']);
+        const link  = ev['Ticket Link'] || '';
+        const meta  = [addr || city, city && addr ? city : '', time,
+                       `${dow}, ${mo} ${day}`].filter(Boolean);
+
+        const btnHref   = link || '#contact';
+        const btnTarget = link ? ' target="_blank" rel="noopener noreferrer"' : '';
+        const btnText   = link ? 'Get Tickets' : 'Get Info';
+        const delay     = i === 0 ? 'delay-1' : i === 1 ? 'delay-2' : '';
+
+        const el = document.createElement('div');
+        el.className = `event-row reveal ${delay}`.trim();
+        el.innerHTML = `
+          <div>
+            <div class="ev-num">${day}</div>
+            <div class="ev-month">${mo}</div>
+          </div>
+          <div class="ev-info">
+            <h3>${venue}</h3>
+            <div class="ev-meta">
+              ${meta.map((m, j) => j === 0 ? `<span>${m}</span>` : `<span class="dot">·</span><span>${m}</span>`).join('')}
+            </div>
+          </div>
+          <a href="${btnHref}"${btnTarget} class="ev-btn">${btnText}</a>`;
+        feed.appendChild(el);
+        if (typeof io !== 'undefined') io.observe(el);
+      });
+    },
+    error: function(err) {
+      console.error('[Events] FAILED:', err);
+      feed.innerHTML = '<div class="ev-empty">Unable to load upcoming shows.</div>';
+    }
+  });
+})();
+</script>
+</body>
+</html>

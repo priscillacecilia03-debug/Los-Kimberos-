@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Los Kimberos | Salsa Dura Band · San Francisco Bay Area</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,700;1,6..96,900&family=Unbounded:wght@300;400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    :root {
+      --bg:    #0A0C0A;
+      --selva: #1A3530;
+      --red:   #C83820;
+      --red2:  #D4701C;
+      --cream: #F0E2CC;
+      --gold:  #C8941A;
+      --dim:   rgba(240,226,204,.22);
+      --mid:   rgba(240,226,204,.65);
+    }
+    body { font-family:'Space Grotesk',sans-serif; background:var(--bg); color:var(--cream); overflow-x:hidden; }
+    a { text-decoration:none; color:inherit; }
+    img { max-width:100%; display:block; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:500;
+      display:grid; grid-template-columns:1fr 1fr; align-items:center;
+      padding:1.8rem 3rem;
+      background:rgba(10,12,10,0.72);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(240,226,204,0.04);
+      transition:background .4s ease, border-color .4s ease;
+    }
+    .nav-links { display:flex; gap:2.5rem; }
+    .nav-links.right { justify-content:flex-end; align-items:center; gap:2rem; }
+    .nav-links a {
+      font-family:'Unbounded',sans-serif;
+      font-size:.62rem; font-weight:400; letter-spacing:2px; text-transform:uppercase;
+      color:var(--cream); transition:color .2s;
+      position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px;
+      background:var(--gold); transform:scaleX(0); transform-origin:left;
+      transition:transform .3s ease;
+    }
+    .nav-links a:hover { color:var(--red2); }
+    .nav-links a:hover::after { transform:scaleX(1); }
+
+    /* Book Us button */
+    .nav-book {
+      font-family:'Unbounded',sans-serif;
+      font-size:.52rem; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+      color:var(--cream); background:var(--red); border:none;
+      padding:.55rem 1.3rem; cursor:pointer;
+      transition:background .25s, transform .2s;
+      display:inline-block;
+    }
+    .nav-book:hover { background:#b02f1a; transform:translateY(-1px); }
+
+    /* Transparent nav over hero, frosted on scroll */
+    nav.nav-light {
+      background:transparent;
+      backdrop-filter:none; -webkit-backdrop-filter:none;
+      border-bottom-color:transparent;
+    }
+    nav.nav-light .nav-links a { color:var(--bg); }
+    nav.nav-light .nav-links a::after { background:var(--bg); }
+    nav.nav-light .nav-links a:hover { color:var(--red); }
+    nav.nav-light .nav-book {
+      color:var(--bg); background:transparent;
+      border:1.5px solid rgba(10,12,10,0.4);
+      padding:.55rem 1.3rem; display:inline-block;
+    }
+    nav.nav-light .nav-book:hover { background:var(--red); border-color:var(--red); color:var(--cream); }
+    nav.nav-light .nav-hamburger span { background:var(--bg); }
+
+    /* Hamburger button */
+    .nav-hamburger {
+      display:none; flex-direction:column; justify-content:center; gap:5px;
+      background:none; border:none; cursor:pointer; z-index:600;
+      padding:4px; width:36px; height:36px;
+    }
+    .nav-hamburger span {
+      display:block; height:1.5px; background:var(--cream);
+      transition:transform .3s ease, opacity .2s ease, width .2s ease;
+      transform-origin:center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-drawer {
+      display:none; position:fixed; inset:0; z-index:450;
+      background:rgba(10,12,10,0.97);
+      flex-direction:column; align-items:center; justify-content:center;
+      gap:3rem; opacity:0; pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    .mobile-drawer.open { opacity:1; pointer-events:all; }
+    .mobile-drawer a {
+      font-family:'Unbounded',sans-serif;
+      font-size:1.1rem; font-weight:700; letter-spacing:4px;
+      text-transform:uppercase; color:var(--cream);
+      transition:color .2s;
+    }
+    .mobile-drawer a:hover { color:var(--red2); }
+    .mobile-drawer .drawer-book {
+      font-family:'Unbounded',sans-serif;
+      font-size:.72rem; font-weight:700; letter-spacing:5px; text-transform:uppercase;
+      color:var(--cream); background:var(--red);
+      padding:.85rem 2.2rem; display:inline-block;
+      transition:background .25s;
+    }
+    .mobile-drawer .drawer-book:hover { background:#b02f1a; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height:100vh;
+      background:
+        radial-gradient(ellipse at 10% 90%, rgba(200,56,32,0.08) 0%, transparent 52%),
+        radial-gradient(ellipse at 86% 12%, rgba(212,112,28,0.05) 0%, transparent 50%),
+        #fffcf1;
+      display:flex; align-items:center;
+      position:relative; overflow:hidden;
+    }
+    /* Film grain */
+    .hero::after {
+      content:''; position:absolute; inset:0; z-index:9; pointer-events:none;
+      opacity:.045;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:300px 300px;
+    }
+    .hero::before { display:none; }
+    .hero-inner {
+      position:relative; z-index:3;
+      width:100%; padding:0 6.5rem;
+      display:flex; flex-direction:column; align-items:center; text-align:center;
+    }
+    /* Ticker pinned to the bottom of the hero viewport */
+    .hero > .ticker-strip {
+      position:absolute; bottom:0; left:0; right:0; z-index:10;
+      border-top:1px solid rgba(245,239,224,.15);
+      border-bottom:none;
+    }
+    .hero-eyebrow {
+      font-family:'Unbounded',sans-serif;
+      font-size:.52rem; font-weight:400; letter-spacing:6px;
+      text-transform:uppercase; color:rgba(10,12,10,0.45);
+      margin-top:2.2rem;
+    }
+    @keyframes titleSlam {
+      0%   { opacity:0; transform:scale(1.18); filter:blur(18px); }
+      55%  { opacity:1; transform:scale(1.02); filter:blur(0.5px); }
+      75%  { transform:scale(.99); filter:blur(0); }
+      100% { opacity:1; transform:scale(1); filter:blur(0); }
+    }
+    .hero-logo-main {
+      width:clamp(540px, 88vw, 1280px);
+      max-width:98%;
+      animation:titleSlam 1.2s cubic-bezier(.16,1.1,.36,1) both;
+    }
+    .hero-ctas {
+      display:flex; gap:1.8rem; margin-top:2rem;
+    }
+    .btn-x {
+      font-family:'Unbounded',sans-serif; font-size:.48rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase;
+      padding:1.1rem 2.8rem; border:1.5px solid rgba(10,12,10,0.35);
+      color:var(--bg); transition:all .32s cubic-bezier(.16,1,.36,1);
+      display:inline-block;
+    }
+    .btn-x:hover {
+      border-color:var(--red); background:var(--red); color:var(--cream);
+      transform:translateY(-3px); box-shadow:0 8px 28px rgba(200,56,32,0.22);
+    }
+    .btn-x.fill {
+      background:var(--red); border-color:var(--red); color:var(--cream);
+      letter-spacing:5px;
+    }
+    .btn-x.fill:hover {
+      background:#b02f1a; border-color:#b02f1a; color:var(--cream);
+      transform:translateY(-3px); box-shadow:0 8px 28px rgba(200,56,32,0.32);
+    }
+    .hero-foot {
+      position:absolute; bottom:2.8rem; right:5rem; z-index:3;
+      font-family:'Unbounded',sans-serif; font-size:.46rem; font-weight:300;
+      letter-spacing:5px; text-transform:uppercase; color:rgba(10,12,10,0.35);
+    }
+
+    /* ── TICKER ── */
+    .ticker-strip {
+      background:var(--selva); padding:.8rem 0; overflow:hidden;
+      border-top:1px solid rgba(245,239,224,.1); border-bottom:1px solid rgba(245,239,224,.1);
+    }
+    .ticker-inner {
+      display:inline-flex; gap:2.5rem; white-space:nowrap;
+      animation:tick 22s linear infinite;
+    }
+    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-inner span {
+      font-family:'Unbounded',sans-serif; font-size:.6rem; font-weight:700;
+      letter-spacing:5px; text-transform:uppercase; color:var(--cream);
+    }
+    .ticker-inner i { color:rgba(245,239,224,.35); font-style:normal; }
+
+    /* ── BAND PHOTO CTA ── */
+    .band-cta {
+      position:relative; overflow:hidden;
+      height:clamp(380px,55vh,640px);
+    }
+    .band-cta-img {
+      width:100%; height:100%; object-fit:cover; object-position:center 30%;
+      display:block;
+    }
+    .band-cta-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(6,14,9,.88) 0%, rgba(6,14,9,.38) 55%, rgba(6,14,9,.12) 100%);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:flex-end;
+      padding:3.5rem 2rem;
+      gap:1.4rem; text-align:center;
+    }
+    .band-cta-label {
+      font-family:'Unbounded',sans-serif; font-size:.48rem;
+      letter-spacing:5px; text-transform:uppercase;
+      color:rgba(240,226,204,.55);
+    }
+    .band-cta-btn {
+      font-family:'Unbounded',sans-serif; font-weight:700;
+      font-size:.52rem; letter-spacing:5px; text-transform:uppercase;
+      color:var(--cream); background:transparent;
+      border:1.5px solid rgba(240,226,204,.55);
+      padding:.9rem 2.8rem; text-decoration:none;
+      transition:all .28s cubic-bezier(.16,1,.36,1);
+      display:inline-block;
+    }
+    .band-cta-btn:hover {
+      background:var(--red); border-color:var(--red);
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(200,56,32,.38);
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background:var(--bg); padding:3.5rem 0;
+      border-bottom:1px solid rgba(240,226,204,0.06);
+    }
+    .trust-bar .container { display:flex; justify-content:center; gap:5rem; flex-wrap:wrap; }
+    .trust-item { display:flex; flex-direction:column; align-items:center; gap:.5rem; }
+    .trust-big {
+      font-family:'Unbounded',sans-serif; font-size:2.4rem; font-weight:900;
+      color:var(--cream); line-height:1;
+    }
+    .trust-big span { color:var(--red2); }
+    .trust-lbl {
+      font-family:'Unbounded',sans-serif; font-size:.44rem; font-weight:400;
+      letter-spacing:4px; text-transform:uppercase; color:rgba(240,226,204,0.5);
+      text-align:center;
+    }
+    .trust-divider {
+      width:1px; background:rgba(240,226,204,0.1); align-self:stretch;
+    }
+
+    /* ── SHARED ── */
+    .container { max-width:1300px; margin:0 auto; padding:0 4rem; }
+    .x-label {
+      font-family:'Unbounded',sans-serif;
+      font-size:.58rem; font-weight:700; letter-spacing:4px;
+      text-transform:uppercase; color:var(--red2); margin-bottom:2rem;
+    }
+
+    /* ── YOUTUBE / WATCH LIVE ── */
+    .watch-live { padding:9rem 0; background:#050505; }
+    .watch-live .x-label { color:var(--red2); }
+    .watch-live-title {
+      font-family:'Unbounded',sans-serif;
+      font-weight:900;
+      font-size:clamp(2.8rem,5.5vw,6rem);
+      line-height:.85; letter-spacing:-.04em;
+      text-transform:uppercase;
+      margin-bottom:3.5rem;
+    }
+    .watch-live-title span { color:var(--red2); }
+    .videos-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
+    }
+    .video-card { display:flex; flex-direction:column; gap:.8rem; }
+    .video-embed {
+      position:relative; padding-bottom:56.25%; height:0; overflow:hidden;
+      background:#0e0e0e; border:1px solid rgba(240,226,204,.06);
+    }
+    .video-embed iframe {
+      position:absolute; top:0; left:0; width:100%; height:100%;
+      border:none;
+    }
+    .video-label {
+      font-family:'Unbounded',sans-serif;
+      font-size:.52rem; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase;
+      color:rgba(240,226,204,0.65);
+    }
+    .video-title {
+      font-family:'Space Grotesk',sans-serif;
+      font-size:.95rem; font-weight:500; color:var(--cream);
+      line-height:1.4;
+    }
+
+
+    /* YouTube facade */
+    .video-card { cursor:pointer; }
+    .video-facade {
+      position:relative; aspect-ratio:16/9; overflow:hidden;
+      background:linear-gradient(135deg,#0d1a14 0%,#1a3530 55%,#0a0c0a 100%);
+      border:1px solid rgba(240,226,204,.06);
+      transition:transform .35s cubic-bezier(.16,1,.36,1), border-color .3s;
+    }
+    .video-card:hover .video-facade {
+      transform:scale(1.02); border-color:rgba(240,226,204,.14);
+    }
+    .video-facade img {
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+      filter:brightness(.78); transition:filter .35s, transform .5s cubic-bezier(.16,1,.36,1);
+    }
+    .video-card:hover .video-facade img { filter:brightness(.95); transform:scale(1.06); }
+    .vf-play {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:58px; height:58px; border-radius:50%;
+      background:rgba(200,56,32,.85); border:none; cursor:pointer; z-index:2;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .25s, transform .25s;
+      pointer-events:none;
+    }
+    .vf-play svg { width:22px; height:22px; fill:var(--cream); margin-left:4px; }
+    .video-card:hover .vf-play { background:var(--red); transform:translate(-50%,-50%) scale(1.15); }
+    .video-facade iframe {
+      position:absolute; inset:0; width:100%; height:100%; border:none; z-index:3;
+    }
+    .vf-playlist-badge {
+      position:absolute; bottom:.9rem; left:1rem; z-index:2;
+      font-family:'Unbounded',sans-serif; font-size:.36rem;
+      letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,.38);
+    }
+    .vf-watch-link {
+      font-family:'Unbounded',sans-serif; font-size:.42rem; font-weight:700;
+      letter-spacing:2.5px; text-transform:uppercase;
+      color:rgba(240,226,204,.38); display:inline-block; margin-top:.5rem;
+      transition:color .2s;
+    }
+    .vf-watch-link:hover { color:var(--red2); }
+
+    /* ── EVENTS ── */
+    .events { padding:9rem 0; background:#050505; }
+    .ev-title-block { margin-bottom:4rem; }
+    .ev-title-block h2 {
+      font-family:'Unbounded',sans-serif;
+      font-style:normal; font-weight:900;
+      font-size:clamp(3.5rem,10vw,12rem);
+      line-height:.82; letter-spacing:-.04em; text-transform:uppercase;
+    }
+    .ev-title-block h2 .outline { color:rgba(240,226,204,0.14); }
+    .ev-title-block h2 .fill { color:var(--red2); }
+    .event-row {
+      display:grid; grid-template-columns:80px 1fr auto;
+      gap:3rem; align-items:center; padding:2rem 0;
+      border-bottom:1px solid var(--dim);
+      transition:padding-left .3s ease, background .3s ease;
+      cursor:default;
+    }
+    .event-row:hover { padding-left:1.5rem; background:rgba(240,226,204,.03); }
+    .event-row:hover .ev-d { color:var(--red2); }
+    .ev-d { font-family:'Unbounded',sans-serif; font-size:3.5rem; font-weight:900; line-height:1; color:var(--cream); opacity:.8; transition:color .3s; }
+    .ev-mo { font-family:'Unbounded',sans-serif; font-size:.5rem; letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,0.6); margin-top:.2rem; }
+    .ev-name { font-family:'Unbounded',sans-serif; font-size:1.25rem; font-weight:700; letter-spacing:-.01em; text-transform:uppercase; margin-bottom:.4rem; }
+    .ev-info { font-size:.76rem; font-weight:400; letter-spacing:1.5px; color:rgba(240,226,204,0.62); }
+    .ev-btn {
+      font-family:'Unbounded',sans-serif; font-size:.5rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase;
+      color:var(--cream); padding:.8rem 1.6rem;
+      border:2px solid var(--dim); transition:all .25s;
+    }
+    .ev-btn:hover { border-color:var(--red2); color:var(--red2); }
+    /* Events feed states */
+    .ev-loading {
+      display:flex; gap:.6rem; justify-content:flex-start; padding:3rem 0;
+    }
+    .ev-loading-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:rgba(240,226,204,.25);
+      animation:evPulse 1.4s ease-in-out infinite;
+    }
+    .ev-loading-dot:nth-child(2) { animation-delay:.2s; }
+    .ev-loading-dot:nth-child(3) { animation-delay:.4s; }
+    @keyframes evPulse {
+      0%,80%,100% { opacity:.2; transform:scale(.8); }
+      40%          { opacity:1;  transform:scale(1); }
+    }
+    .ev-empty {
+      font-family:'Unbounded',sans-serif; font-size:.5rem;
+      letter-spacing:3px; text-transform:uppercase;
+      color:rgba(240,226,204,.3); padding:3rem 0;
+    }
+    .ev-type {
+      font-family:'Unbounded',sans-serif; font-size:.42rem; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase;
+      color:var(--gold); margin-top:.4rem;
+    }
+    .ev-notes {
+      font-size:.74rem; font-style:italic;
+      color:rgba(240,226,204,.42); margin-top:.25rem;
+    }
+
+    /* ── BOOKING — MAGAZINE IMMERSIVE ── */
+    #contact {
+      background:var(--bg); padding:0;
+      min-height:100vh; display:flex; flex-direction:column;
+    }
+    .mi-wrap { width:100%; flex:1; display:flex; flex-direction:column; }
+
+    /* Hero headline zone */
+    .mi-hero {
+      background:linear-gradient(135deg, var(--selva) 0%, var(--bg) 65%);
+      padding:4rem clamp(2.5rem,8vw,8rem) 5rem;
+      position:relative; overflow:hidden;
+    }
+    .mi-hero::before {
+      content:''; position:absolute; top:-60px; right:-60px;
+      width:380px; height:380px; border-radius:50%;
+      background:rgba(200,56,32,0.07); pointer-events:none;
+    }
+    .mi-heading {
+      font-family:'Unbounded',sans-serif; font-weight:900;
+      font-size:clamp(2.8rem,5.5vw,5.5rem); line-height:.88; letter-spacing:-.04em;
+      text-transform:uppercase; color:var(--cream);
+      position:relative; z-index:1;
+    }
+    .mi-heading .mi-red { color:var(--red); }
+    .mi-sub-eye {
+      font-family:'Unbounded',sans-serif; font-weight:300;
+      font-size:.58rem; letter-spacing:4px; text-transform:uppercase;
+      color:rgba(240,226,204,.65); margin-top:2rem;
+      position:relative; z-index:1;
+    }
+
+    /* Form area — full width, no floating card */
+    .mi-card {
+      margin:0; background:rgba(240,226,204,.03);
+      border:none; border-top:.5px solid rgba(240,226,204,.10);
+      border-radius:0; padding:3.5rem clamp(2.5rem,8vw,8rem);
+      flex:1;
+    }
+    .mi-card-label {
+      font-family:'Unbounded',sans-serif; font-size:.54rem;
+      letter-spacing:5px; text-transform:uppercase;
+      color:rgba(240,226,204,.65); margin-bottom:2.5rem;
+      display:block; max-width:1100px; margin-left:auto; margin-right:auto;
+    }
+
+    /* Field labels — bright and readable */
+    .mi-label {
+      font-family:'Unbounded',sans-serif; font-size:.48rem;
+      letter-spacing:4px; text-transform:uppercase;
+      color:var(--cream); margin-bottom:.6rem; display:block;
+    }
+    .mi-form-field { display:flex; flex-direction:column; margin-bottom:1.8rem; }
+
+    /* Center form content */
+    .mi-form { max-width:1100px; margin:0 auto; }
+
+    /* Inputs & selects */
+    .mi-form input,
+    .mi-form select {
+      background:rgba(240,226,204,.04); border:none;
+      border-bottom:1px solid rgba(240,226,204,.25);
+      color:var(--cream); padding:.9rem 0;
+      font-family:'Space Grotesk',sans-serif; font-size:1rem;
+      outline:none; border-radius:0;
+      -webkit-appearance:none; appearance:none;
+      width:100%; transition:border-bottom-color .25s;
+    }
+    .mi-form select option { background:#0a1510; color:var(--cream); }
+    .mi-form input[type="date"],
+    .mi-form input[type="time"] { color-scheme:dark; }
+    .mi-form input::placeholder { color:rgba(240,226,204,.42); }
+    .mi-form input:focus,
+    .mi-form select:focus { border-bottom-color:var(--red); }
+
+    /* Grid rows — wider gap on desktop */
+    .mi-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+    .mi-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2rem; }
+
+    /* Bottom bar */
+    .mi-bottom {
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:1.2rem; margin-top:1.8rem;
+      padding-top:1.8rem; border-top:.5px solid rgba(240,226,204,.12);
+    }
+
+    /* Setting pills */
+    .mi-pills { display:flex; gap:.5rem; }
+    .mi-pill-input { display:none; }
+    .mi-pill-label {
+      background:rgba(240,226,204,.06); border:.5px solid rgba(240,226,204,.18);
+      color:rgba(240,226,204,.72);
+      font-family:'Unbounded',sans-serif; font-size:.46rem;
+      letter-spacing:2.5px; text-transform:uppercase;
+      padding:.65rem 1.2rem; cursor:pointer; transition:all .2s;
+    }
+    .mi-pill-input:checked + .mi-pill-label {
+      background:rgba(200,56,32,.18); border-color:rgba(200,56,32,.5); color:var(--cream);
+    }
+
+    /* Submit CTA */
+    .mi-submit {
+      background:var(--red); color:var(--cream);
+      font-family:'Unbounded',sans-serif; font-weight:700;
+      font-size:.54rem; letter-spacing:5px; text-transform:uppercase;
+      padding:1rem 3rem; border:none; cursor:pointer; white-space:nowrap;
+      transition:all .28s cubic-bezier(.16,1,.36,1);
+    }
+    .mi-submit:hover {
+      background:#a82d18; transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(200,56,32,.38);
+    }
+
+    /* Contact strip */
+    .mi-contact-strip {
+      margin:0; display:flex;
+      border-top:.5px solid rgba(240,226,204,.1);
+      padding:2rem clamp(2.5rem,8vw,8rem) 3rem;
+    }
+    .mi-citem {
+      flex:1; display:flex; flex-direction:column; gap:.45rem;
+      padding:0 2rem; border-right:1px solid rgba(240,226,204,.1);
+    }
+    .mi-citem:first-child { padding-left:0; }
+    .mi-citem:last-child { border-right:none; }
+    .mi-clabel {
+      font-family:'Unbounded',sans-serif; font-size:.46rem;
+      letter-spacing:3.5px; text-transform:uppercase;
+      color:rgba(240,226,204,.5);
+    }
+    .mi-cval {
+      font-family:'Space Grotesk',sans-serif; font-size:.95rem;
+      color:rgba(240,226,204,.72); transition:color .2s;
+    }
+    .mi-cval:hover { color:var(--cream); }
+
+    /* Success state */
+    .mi-success {
+      display:none; padding:5rem 2rem; text-align:center;
+      flex-direction:column; align-items:center; gap:1.4rem;
+    }
+    .mi-success.visible { display:flex; }
+    .mi-success-icon {
+      width:64px; height:64px; border-radius:50%;
+      background:rgba(200,56,32,.12); border:1.5px solid var(--red);
+      display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+    }
+    .mi-success h3 {
+      font-family:'Unbounded',sans-serif; font-size:.75rem; font-weight:700;
+      letter-spacing:4px; text-transform:uppercase; color:var(--cream);
+    }
+    .mi-success p { font-size:.9rem; color:rgba(240,226,204,.65); line-height:1.7; }
+
+    /* Error state */
+    .mi-error {
+      display:none; margin-top:1.2rem; padding:.9rem 1.4rem;
+      border:1px solid rgba(200,56,32,.45); background:rgba(200,56,32,.08);
+      font-family:'Space Grotesk',sans-serif; font-size:.82rem; line-height:1.6;
+      color:rgba(240,226,204,.75);
+    }
+    .mi-error.visible { display:block; }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--bg); padding:3rem 4rem;
+      display:flex; justify-content:space-between; align-items:center;
+      border-top:3px solid var(--selva);
+    }
+    footer img { height:36px; opacity:.45; }
+    footer p { font-family:'Unbounded',sans-serif; font-size:.52rem; font-weight:400; letter-spacing:3px; text-transform:uppercase; color:rgba(240,226,204,0.55); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    .reveal-l { opacity:0; transform:translateX(-36px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal-l.visible { opacity:1; transform:none; }
+    .reveal-r { opacity:0; transform:translateX(36px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal-r.visible { opacity:1; transform:none; }
+    .d1 { transition-delay:.1s; } .d2 { transition-delay:.2s; } .d3 { transition-delay:.3s; }
+
+    /* ── EVENT ROW HOVER ── */
+    .event-row { transition:padding-left .3s ease, background .3s ease; }
+
+    /* ══ RESPONSIVE ══ */
+
+    /* ── TABLET  768px–1023px ── */
+    @media (max-width:1023px) {
+      /* Hamburger replaces full nav on tablet + mobile */
+      nav { padding:1.3rem 2rem; grid-template-columns:1fr auto; }
+      .nav-links { display:none; }
+      .nav-hamburger { display:flex; }
+      .mobile-drawer { display:flex; }
+
+      /* Tighter container */
+      .container { padding:0 2.5rem; }
+
+      /* Hero — prevent horizontal overflow */
+      .hero-inner { padding:0 3rem; }
+      .hero-logo-main { width:clamp(380px,78vw,720px); }
+
+      /* Trust bar */
+      .trust-bar .container { gap:3rem; }
+      .trust-divider { display:none; }
+
+      /* Videos — 2 columns on tablet */
+      .watch-live { padding:7rem 0; }
+      .videos-grid { grid-template-columns:repeat(2,1fr); gap:1.8rem; }
+
+      /* Events */
+      .events { padding:7rem 0; }
+      .ev-title-block h2 { font-size:clamp(3rem,9vw,8rem); }
+      .event-row { grid-template-columns:70px 1fr auto; gap:2rem; }
+      .ev-d { font-size:3rem; }
+
+      /* Booking */
+      .mi-hero { padding:3.5rem 3rem 4.5rem; }
+      .mi-card { padding:3rem; }
+      .mi-row-3 { grid-template-columns:1fr 1fr; }
+      .mi-contact-strip { padding:2rem 3rem 3rem; }
+
+      /* Band photo CTA */
+      .band-cta { height:clamp(320px,48vh,520px); }
+
+      /* Footer */
+      footer { padding:2.5rem 3rem; }
+    }
+
+    /* ── MOBILE  ≤767px ── */
+    @media (max-width:767px) {
+      nav { padding:1.2rem 1.2rem; }
+
+      /* Hero */
+      .hero-inner { padding:0 1.5rem; }
+      .hero-logo-main { width:clamp(260px,88vw,480px); }
+      .hero-eyebrow { font-size:.44rem; letter-spacing:3px; margin-top:1.5rem; }
+      .hero-ctas { flex-direction:column; gap:.9rem; margin-top:2rem; width:100%; }
+      .btn-x { text-align:center; width:100%; padding:.95rem 1.5rem; }
+      .hero-foot { display:none; }
+
+      /* Trust bar */
+      .trust-bar { padding:2.8rem 0; }
+      .trust-bar .container { gap:2rem; flex-wrap:wrap; justify-content:center; }
+      .trust-big { font-size:2rem; }
+
+      /* Container */
+      .container { padding:0 1.5rem; }
+
+      /* Videos — 1 column */
+      .watch-live { padding:5rem 0; }
+      .videos-grid { grid-template-columns:1fr; gap:2rem; }
+      .watch-live-title { font-size:clamp(2rem,8vw,3.5rem); margin-bottom:2.5rem; }
+
+      /* Events */
+      .events { padding:5rem 0; }
+      .ev-title-block { margin-bottom:2.5rem; }
+      .ev-title-block h2 { font-size:clamp(2.2rem,11vw,4.5rem); }
+      .event-row { grid-template-columns:56px 1fr; gap:1.2rem; padding:1.6rem 0; }
+      .ev-btn { display:none; }
+      .ev-d { font-size:2.4rem; }
+      .ev-name { font-size:1rem; }
+      .ev-info { font-size:.7rem; }
+
+      /* Booking */
+      .mi-hero { padding:2.5rem 1.5rem 3rem; }
+      .mi-card { padding:2.5rem 1.5rem; }
+      .mi-card-label { margin-bottom:1.8rem; }
+      .mi-row-2, .mi-row-3 { grid-template-columns:1fr; gap:0; }
+      .mi-bottom { flex-direction:column; align-items:flex-start; }
+      .mi-submit { width:100%; text-align:center; padding:1.1rem 2rem; }
+      .mi-contact-strip { flex-direction:column; gap:0; padding:1.5rem 1.5rem 2rem; }
+      .mi-citem {
+        padding:1rem 0; border-right:none;
+        border-bottom:.5px solid rgba(240,226,204,.08);
+      }
+      .mi-citem:last-child { border-bottom:none; }
+      .mi-pills { flex-wrap:wrap; }
+
+      /* Band photo CTA */
+      .band-cta { height:clamp(280px,55vh,440px); }
+      .band-cta-btn { padding:.85rem 2rem; }
+
+      /* Footer */
+      footer { flex-direction:column; gap:1.2rem; text-align:center; padding:2.5rem 1.5rem; }
+    }
+
+    /* ── SMALL MOBILE  ≤480px ── */
+    @media (max-width:480px) {
+      .hero-logo-main { width:clamp(240px,92vw,380px); }
+
+      .trust-bar .container { flex-direction:column; gap:1.8rem; align-items:center; }
+      .trust-item { flex-direction:row; gap:1rem; align-items:center; }
+      .trust-lbl { text-align:left; }
+
+      .live-gallery-grid { columns:1; }
+
+      .event-row { grid-template-columns:1fr; gap:.4rem; padding:1.4rem 0; }
+      .ev-date-col { display:flex; gap:.8rem; align-items:baseline; }
+      .ev-d { font-size:2rem; }
+      .ev-mo { display:inline; margin-top:0; }
+
+      .contact-heading { font-size:clamp(1.4rem,7vw,2.5rem); }
+
+      .mi-heading { font-size:clamp(2rem,8vw,3.2rem); }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-links">
+    <a href="concept4.html">Home</a>
+    <a href="#videos">Videos</a>
+    <a href="#shows">Shows</a>
+  </div>
+  <div class="nav-links right">
+    <a href="about.html">About</a>
+    <a href="#contact" class="nav-book">Book Us</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="concept4.html" class="drawer-link">Home</a>
+  <a href="#videos" class="drawer-link">Videos</a>
+  <a href="#shows" class="drawer-link">Shows</a>
+  <a href="about.html" class="drawer-link">About</a>
+  <a href="#contact" class="drawer-book">Book a Show</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <img src="ovalremovedlogo.png" alt="Los Kimberos" class="hero-logo-main"/>
+  </div>
+  <!-- TICKER — pinned to bottom of first screen -->
+  <div class="ticker-strip">
+    <div class="ticker-inner">
+      <span>Los Kimberos</span><i>—</i><span>Salsa Dura</span><i>—</i>
+      <span>Bay Area</span><i>—</i><span>Mission District</span><i>—</i>
+      <span>San Francisco</span><i>—</i><span>Latin Music</span><i>—</i>
+      <span>Los Kimberos</span><i>—</i><span>Salsa Dura</span><i>—</i>
+      <span>Bay Area</span><i>—</i><span>Mission District</span><i>—</i>
+      <span>San Francisco</span><i>—</i><span>Latin Music</span><i>—</i>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING — Magazine Immersive -->
+<section id="contact" class="reveal">
+  <div class="mi-wrap">
+
+    <!-- Hero headline zone -->
+    <div class="mi-hero">
+      <h2 class="mi-heading">Reserve<br/><span class="mi-red">the</span> Date</h2>
+      <p class="mi-sub-eye">Salsa Dura &nbsp;·&nbsp; Bay Area &nbsp;·&nbsp; Festivals &amp; Private Events</p>
+    </div>
+
+    <!-- Floating form card -->
+    <div class="mi-card">
+      <div class="mi-card-label">Event Details</div>
+
+      <form class="mi-form" id="bookingForm" action="https://formspree.io/f/xaqzlnvg" method="POST">
+
+        <!-- Row 1: Event Type + Duration -->
+        <div class="mi-row-2">
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-event-type">Event Type</label>
+            <select id="mi-event-type" name="event_type" required>
+              <option value="" disabled selected>Select type</option>
+              <option>Wedding</option>
+              <option>Corporate Event</option>
+              <option>Festival / Concert</option>
+              <option>Private Party</option>
+              <option>Quinceañera</option>
+              <option>Cultural Celebration</option>
+              <option>Restaurant / Venue Night</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-duration">Performance Length</label>
+            <select id="mi-duration" name="performance_length">
+              <option value="" disabled selected>Select duration</option>
+              <option>1 Hour</option>
+              <option>1.5 Hours</option>
+              <option>2 Hours</option>
+              <option>3 Hours</option>
+              <option>3+ Hours / Full Night</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 2: Date + Time + Guests -->
+        <div class="mi-row-3">
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-date">Event Date</label>
+            <input id="mi-date" type="date" name="event_date" required/>
+          </div>
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-time">Start Time</label>
+            <input id="mi-time" type="time" name="start_time" required/>
+          </div>
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-guests">Guest Count</label>
+            <select id="mi-guests" name="guest_count">
+              <option value="" disabled selected>Select range</option>
+              <option>Under 50</option>
+              <option>50 – 100</option>
+              <option>100 – 200</option>
+              <option>200 – 500</option>
+              <option>500+</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 3: Venue -->
+        <div class="mi-form-field">
+          <label class="mi-label" for="mi-venue">Venue / Location</label>
+          <input id="mi-venue" type="text" name="venue_location" placeholder="Venue name &amp; city" required/>
+        </div>
+
+        <!-- Row 4: Name + Phone -->
+        <div class="mi-row-2">
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-name">Your Name</label>
+            <input id="mi-name" type="text" name="full_name" placeholder="Full name" required/>
+          </div>
+          <div class="mi-form-field">
+            <label class="mi-label" for="mi-phone">Phone Number</label>
+            <input id="mi-phone" type="tel" name="phone_number" placeholder="(415) 000-0000"/>
+          </div>
+        </div>
+
+        <!-- Row 5: Email -->
+        <div class="mi-form-field">
+          <label class="mi-label" for="mi-email">Email Address</label>
+          <input id="mi-email" type="email" name="email" placeholder="you@example.com" required/>
+        </div>
+
+        <!-- Bottom bar: Setting pills + CTA -->
+        <div class="mi-bottom">
+          <div class="mi-pills">
+            <input type="radio" name="setting" id="mi-indoor" value="indoor" class="mi-pill-input"/>
+            <label for="mi-indoor" class="mi-pill-label">Indoor</label>
+            <input type="radio" name="setting" id="mi-outdoor" value="outdoor" class="mi-pill-input"/>
+            <label for="mi-outdoor" class="mi-pill-label">Outdoor</label>
+            <input type="radio" name="setting" id="mi-both" value="both" class="mi-pill-input"/>
+            <label for="mi-both" class="mi-pill-label">Both</label>
+          </div>
+          <button type="submit" class="mi-submit">Reserve the Date</button>
+        </div>
+
+        <!-- Error message -->
+        <div class="mi-error" id="formError">
+          Something went wrong. Please try again or email us directly.
+        </div>
+
+      </form>
+
+      <!-- Success state -->
+      <div class="mi-success" id="formSuccess">
+        <div class="mi-success-icon">✓</div>
+        <h3>Request Received!</h3>
+        <p>Thank you! Your booking inquiry has been sent. We'll be in touch soon.</p>
+      </div>
+
+    </div><!-- /mi-card -->
+
+    <!-- Contact info strip -->
+    <div class="mi-contact-strip">
+      <div class="mi-citem">
+        <span class="mi-clabel">Email</span>
+        <a href="mailto:Loskimberossalsa@gmail.com" class="mi-cval">Loskimberossalsa@gmail.com</a>
+      </div>
+      <div class="mi-citem">
+        <span class="mi-clabel">Phone</span>
+        <a href="tel:6504389554" class="mi-cval">(650)438-9554</a>
+      </div>
+      <div class="mi-citem">
+        <span class="mi-clabel">Instagram</span>
+        <a href="https://www.instagram.com/loskimberos/" target="_blank" rel="noopener" class="mi-cval">@loskimberos</a>
+      </div>
+    </div>
+
+  </div><!-- /mi-wrap -->
+</section>
+
+<!-- BAND PHOTO CTA -->
+<div class="band-cta reveal">
+  <img src="groupphoto.jpg" alt="Los Kimberos band" class="band-cta-img"/>
+  <div class="band-cta-overlay">
+    <div class="band-cta-label">Nine musicians. One sound.</div>
+    <a href="about.html" class="band-cta-btn">About Us</a>
+  </div>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="trust-item reveal">
+      <div class="trust-big">10<span>+</span></div>
+      <div class="trust-lbl">Years<br/>performing</div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d1">
+      <div class="trust-big">9<span>+</span></div>
+      <div class="trust-lbl">Live<br/>musicians</div>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-item reveal d2">
+      <div class="trust-big">SF</div>
+      <div class="trust-lbl">Bay Area<br/>based</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section class="events" id="shows">
+  <div class="container">
+    <div class="ev-title-block reveal">
+      <div class="x-label">Upcoming Performances</div>
+      <h2>
+        <span class="outline">Live</span><br/>
+        <span class="fill">Shows</span>
+      </h2>
+    </div>
+    <div id="events-feed">
+      <!-- Events loaded from Google Sheets -->
+      <div class="ev-loading">
+        <span class="ev-loading-dot"></span>
+        <span class="ev-loading-dot"></span>
+        <span class="ev-loading-dot"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WATCH LIVE: YOUTUBE -->
+<section class="watch-live" id="videos">
+  <div class="container">
+    <div class="reveal">
+      <div class="x-label">YouTube · Live Performances</div>
+      <h2 class="watch-live-title">Watch <span>Live</span></h2>
+    </div>
+    <div class="videos-grid">
+
+      <!-- Video 1: link-out card — no iframe embed -->
+      <div class="video-card reveal d1">
+        <div class="video-facade"
+             data-href="https://www.youtube.com/watch?v=_6HmWHMWLkc"
+             role="button" tabindex="0" aria-label="Watch Los Kimberos — Salsa Dura Live on YouTube">
+          <img src="https://img.youtube.com/vi/_6HmWHMWLkc/maxresdefault.jpg"
+               alt="Los Kimberos — Salsa Dura Live"
+               onerror="this.style.display='none'"/>
+          <button class="vf-play" tabindex="-1" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+        <div class="video-label">Live · Bay Area</div>
+        <div class="video-title">Los Kimberos — Salsa Dura Live</div>
+        <a class="vf-watch-link" href="https://www.youtube.com/watch?v=_6HmWHMWLkc" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+      </div>
+
+      <!-- Video 2: playlist — styled dark card -->
+      <!-- Video 2: link-out card — no iframe embed -->
+      <div class="video-card reveal d2">
+        <div class="video-facade"
+             data-href="https://www.youtube.com/watch?v=f_PAVTPI_vE"
+             role="button" tabindex="0" aria-label="Watch Los Kimberos on YouTube">
+          <img src="https://i.ytimg.com/vi/f_PAVTPI_vE/maxresdefault.jpg"
+               alt="Los Kimberos"
+               onerror="this.src='https://i.ytimg.com/vi/f_PAVTPI_vE/hqdefault.jpg'"/>
+          <button class="vf-play" tabindex="-1" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+        <div class="video-label">Live · Bay Area</div>
+        <div class="video-title">Los Kimberos</div>
+        <a class="vf-watch-link" href="https://www.youtube.com/watch?v=f_PAVTPI_vE" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+      </div>
+
+      <!-- Video 3: link-out card — no iframe embed -->
+      <div class="video-card reveal d3">
+        <div class="video-facade"
+             data-href="https://www.youtube.com/watch?v=tgyj7R28ZbY"
+             role="button" tabindex="0" aria-label="Watch Los Kimberos — Mother's Day Celebration on YouTube">
+          <img src="https://i.ytimg.com/vi/tgyj7R28ZbY/maxresdefault.jpg"
+               alt="Los Kimberos — Mother's Day Celebration @ Union Square"
+               onerror="this.src='https://i.ytimg.com/vi/tgyj7R28ZbY/hqdefault.jpg'"/>
+          <button class="vf-play" tabindex="-1" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+        <div class="video-label">Live · Union Square</div>
+        <div class="video-title">Mother's Day Celebration @ Union Square</div>
+        <a class="vf-watch-link" href="https://www.youtube.com/watch?v=tgyj7R28ZbY" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="loskimberoslogo.png" alt="Los Kimberos" onerror="this.style.display='none'"/>
+  <p>© 2026 Los Kimberos · San Francisco Bay Area</p>
+  <p>Feel the Rhythm of the Bay</p>
+</footer>
+
+<script>
+  /* ── SCROLL REVEAL ── */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+  }), { threshold:.08 });
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => io.observe(el));
+
+  /* ── NAV LIGHT / DARK on scroll ── */
+  const navEl = document.querySelector('nav');
+  function updateNav() {
+    navEl.classList.toggle('nav-light', window.scrollY < window.innerHeight * 0.8);
+  }
+  window.addEventListener('scroll', updateNav, { passive:true });
+  updateNav();
+
+  /* ── MOBILE NAV ── */
+  const hamburger = document.getElementById('hamburger');
+  const drawer    = document.getElementById('mobileDrawer');
+
+  function toggleMenu(open) {
+    hamburger.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = hamburger.classList.contains('open');
+    toggleMenu(!isOpen);
+  });
+
+  // Close drawer on any link click
+  drawer.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => toggleMenu(false));
+  });
+
+  // Close on backdrop click
+  drawer.addEventListener('click', e => {
+    if(e.target === drawer) toggleMenu(false);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') toggleMenu(false);
+  });
+
+  /* ── YOUTUBE FACADE ── */
+  document.querySelectorAll('.video-card').forEach(card => {
+    const facade = card.querySelector('.video-facade');
+    if (!facade) return;
+    function activate(e) {
+      if (e.target.closest('.vf-watch-link')) return;
+      const src = facade.dataset.src;
+      const href = facade.dataset.href;
+      if (!src) {
+        // No embed source — open YouTube directly in a new tab
+        if (href) window.open(href, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.title = facade.getAttribute('aria-label') || 'YouTube video';
+      facade.innerHTML = '';
+      facade.style.background = '#000';
+      card.style.cursor = 'default';
+      card.removeEventListener('click', activate);
+      card.removeEventListener('keydown', onKey);
+      facade.appendChild(iframe);
+    }
+    function onKey(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); } }
+    card.addEventListener('click', activate);
+    card.addEventListener('keydown', onKey);
+  });
+
+  /* ── EVENTS: Google Sheets CSV (vanilla JS) ── */
+  (function loadEvents() {
+    const CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSF1TN1uaUM-HpXO3Zi-CMydGbwhr29JvO8IgXaifnqgCyikN96YmEHu7Qzz6xqd3gJnXhtuWJyeqHu/pub?gid=0&single=true&output=csv&t=' + Date.now();
+    const feed = document.getElementById('events-feed');
+    if (!feed) return;
+    console.log('[Events] CSV URL:', CSV);
+
+    function parseRow(line) {
+      const cols = []; let cur = ''; let inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
+          else { inQ = !inQ; }
+        } else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      cols.push(cur);
+      return cols;
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = parseRow(lines[0]).map(h => h.trim());
+      return lines.slice(1).filter(l => l.trim()).map(l => {
+        const vals = parseRow(l);
+        const row = {};
+        headers.forEach((h, i) => { row[h] = (vals[i] || '').trim(); });
+        return row;
+      });
+    }
+
+    function fmtTime(raw) {
+      if (!raw) return '';
+      const ampm = raw.trim().match(/^(\d+):(\d+)(?::\d+)?\s*(AM|PM)$/i);
+      if (ampm) return `${ampm[1]}:${ampm[2]} ${ampm[3].toUpperCase()}`;
+      const h24 = raw.trim().match(/^(\d{1,2}):(\d{2})$/);
+      if (h24) {
+        const hr = parseInt(h24[1]), min = h24[2];
+        return `${hr % 12 || 12}:${min} ${hr >= 12 ? 'PM' : 'AM'}`;
+      }
+      return raw.trim();
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    feed.innerHTML = '';
+
+    fetch(CSV, { cache: 'no-store' })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function(text) {
+        console.log('[Events] Raw CSV response (first 300 chars):', text.slice(0, 300));
+
+        if (text.trimStart().startsWith('<')) {
+          throw new Error('Received HTML instead of CSV — check sheet publish settings');
+        }
+
+        const rows = parseCSV(text);
+        console.log('[Events] Parsed rows:', rows.length, '| Headers:', Object.keys(rows[0] || {}));
+
+        const now = new Date(); now.setHours(0, 0, 0, 0);
+
+        const upcoming = rows
+          .filter(function(r) {
+            const d = new Date(r['Event Date']);
+            return !isNaN(d) && d >= now;
+          })
+          .sort(function(a, b) {
+            return new Date(a['Event Date']) - new Date(b['Event Date']);
+          });
+
+        console.log('[Events] Upcoming event count:', upcoming.length);
+        feed.innerHTML = '';
+
+        if (!upcoming.length) {
+          feed.innerHTML = '<div class="ev-empty">No upcoming shows yet — check back soon.</div>';
+          return;
+        }
+
+        const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        upcoming.forEach(function(ev, i) {
+          const date      = new Date(ev['Event Date']);
+          const day       = date.getDate();
+          const mo        = MONTHS[date.getMonth()].toUpperCase() + ' ' + date.getFullYear();
+          const venue     = esc(ev['Venue Name'] || 'TBA');
+          const city      = esc(ev['City'] || '');
+          const address   = esc(ev['Address'] || '');
+          const time      = esc(fmtTime(ev['Start Time']));
+          const eventType = esc(ev['Event Type'] || '');
+          const notes     = esc(ev['Notes'] || '');
+          const link      = ev['Ticket Link'] || '';
+          const delay     = 'd' + Math.min(i + 1, 3);
+
+          const line1 = [city, time].filter(Boolean).join(' · ');
+
+          const btnHtml = link
+            ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer" class="ev-btn">Get Tickets</a>'
+            : '<div></div>';
+
+          const el = document.createElement('div');
+          el.className = 'event-row reveal ' + delay;
+          el.innerHTML =
+            '<div class="ev-date-col">' +
+              '<div class="ev-d">'  + day + '</div>' +
+              '<div class="ev-mo">' + mo  + '</div>' +
+            '</div>' +
+            '<div class="ev-details">' +
+              '<div class="ev-name">' + venue + '</div>' +
+              (line1    ? '<div class="ev-info">'   + line1    + '</div>' : '') +
+              (address  ? '<div class="ev-info">'   + address  + '</div>' : '') +
+              (eventType? '<div class="ev-type">'   + eventType+ '</div>' : '') +
+              (notes    ? '<div class="ev-notes">'  + notes    + '</div>' : '') +
+            '</div>' +
+            btnHtml;
+
+          feed.appendChild(el);
+          io.observe(el);
+        });
+      })
+      .catch(function(err) {
+        console.error('[Events] Failed to load:', err);
+        feed.innerHTML = '<div class="ev-empty">Unable to load upcoming shows.</div>';
+      });
+  })();
+
+  /* ── BOOKING FORM ── */
+  document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form    = this;
+    const btn     = form.querySelector('.mi-submit');
+    const errEl   = document.getElementById('formError');
+
+    btn.disabled  = true;
+    btn.textContent = 'Sending…';
+    errEl.classList.remove('visible');
+
+    try {
+      const res = await fetch('https://formspree.io/f/xaqzlnvg', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('formSuccess').classList.add('visible');
+      } else {
+        errEl.classList.add('visible');
+        btn.disabled = false;
+        btn.textContent = 'Reserve the Date';
+      }
+    } catch(_) {
+      errEl.classList.add('visible');
+      btn.disabled = false;
+      btn.textContent = 'Reserve the Date';
+    }
+  });
+
+</script>
+</body>
+</html>
