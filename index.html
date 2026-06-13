@@ -190,6 +190,8 @@
       font-family:'Unbounded',sans-serif; font-size:.46rem; font-weight:300;
       letter-spacing:5px; text-transform:uppercase; color:rgba(10,12,10,0.35);
     }
+    /* Mobile-only booking CTA — hidden on desktop */
+    .hero-mobile-cta { display:none; }
 
     /* ── TICKER ── */
     .ticker-strip {
@@ -644,13 +646,29 @@
     @media (max-width:767px) {
       nav { padding:1.2rem 1.2rem; }
 
-      /* Hero */
-      .hero-inner { padding:0 1.5rem; }
+      /* Hero — tighter so next section peeks below fold */
+      .hero { min-height:76vh; align-items:flex-start; }
+      .hero-inner { padding:5rem 1.5rem 2rem; }
       .hero-logo-main { width:clamp(260px,88vw,480px); }
       .hero-eyebrow { font-size:.44rem; letter-spacing:3px; margin-top:1.5rem; }
       .hero-ctas { flex-direction:column; gap:.9rem; margin-top:2rem; width:100%; }
       .btn-x { text-align:center; width:100%; padding:.95rem 1.5rem; }
       .hero-foot { display:none; }
+
+      /* Mobile booking CTA */
+      .hero-mobile-cta {
+        display:flex; align-items:center; justify-content:center;
+        margin-top:1.75rem; width:100%;
+        min-height:52px;                   /* accessible tap target */
+        font-family:'Unbounded',sans-serif;
+        font-size:.52rem; font-weight:700; letter-spacing:5px;
+        text-transform:uppercase;
+        color:var(--cream); background:var(--red);
+        border:none; padding:1.1rem 2rem;
+        transition:background .25s, transform .15s;
+        position:relative; z-index:4;
+      }
+      .hero-mobile-cta:active { background:#b02f1a; transform:scale(.98); }
 
       /* Trust bar */
       .trust-bar { padding:2.8rem 0; }
@@ -700,7 +718,9 @@
 
     /* ── SMALL MOBILE  ≤480px ── */
     @media (max-width:480px) {
+      .hero { min-height:78vh; }
       .hero-logo-main { width:clamp(240px,92vw,380px); }
+      .hero-mobile-cta { font-size:.46rem; letter-spacing:4px; margin-top:1.5rem; }
 
       .trust-bar .container { flex-direction:column; gap:1.8rem; align-items:center; }
       .trust-item { flex-direction:row; gap:1rem; align-items:center; }
@@ -751,6 +771,7 @@
 <section class="hero">
   <div class="hero-inner">
     <img src="ovalremovedlogo.png" alt="Los Kimberos" class="hero-logo-main"/>
+    <a href="#contact" class="hero-mobile-cta">Book the Band ↓</a>
   </div>
   <!-- TICKER — pinned to bottom of first screen -->
   <div class="ticker-strip">
